@@ -32,5 +32,6 @@ label intro_aphrodite:
 
     c "Ahora ya habrán pasado unas 2 horas."
 
-    # Fin provisional del prólogo (aquí continuará la siguiente escena / decisiones del jugador)
-    return
+    # Salto a la escena de despertar e interacción con la tripulación
+    jump despertar_nave
+
