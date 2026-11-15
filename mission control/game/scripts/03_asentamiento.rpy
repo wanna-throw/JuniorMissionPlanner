@@ -1,432 +1,469 @@
-## 03_asentamiento.rpy - Escena del despertar, tablet y llegada al asentamiento
+## 03_asentamiento.rpy - Wake-up scene, tablet and arrival at the settlement
 
-label despertar_nave:
+label ship_wakeup:
 
-    # Continúa en el interior de la nave tras el aterrizaje
-    scene bg nave with dissolve
+    # Continues inside the ship after landing
+    scene bg ship with dissolve
 
-    # 1. Primer personaje (Miquel) entra y dice su primera frase centrado
+    # 1. The first character (Miquel) enters and says his first line, centered
     $ set_char_pos("Miquel", "center")
-    show miquel_mediocuerpo at pos_centro with dissolve
+    show miquel_halfbody at pos_center with dissolve
 
-    M "Comandante..."
+    M "Commander..."
 
-    T "Hmm... 5 minutos más"
+    T "Hmm... 5 more minutes."
 
-    M "Despierta, anda, que se nos hará muy tarde para llegar al asentamiento."
+    M "Come on, wake up, or we'll be way too late to reach the settlement."
 
-    T "¿Qué hora es?"
+    T "What time is it?"
 
-    # 2. Entra el segundo personaje (Hanna):
-    # - El primer personaje (Miquel) se desplaza a la izquierda (pequeño y transparente)
-    # - El segundo personaje (Hanna) aparece en el centro para decir su primer diálogo
+    # 2. The second character (Hanna) enters:
+    # - The first character (Miquel) moves to the left (smaller and faded)
+    # - The second character (Hanna) appears in the center to say her first line
     $ set_char_pos("Miquel", "left")
-    show miquel_mediocuerpo at mover_izq_idle
+    show miquel_halfbody at move_left_idle
     $ set_char_pos("Hanna", "center")
-    show hanna_mediocuerpo_seria at pos_centro with dissolve
+    show hanna_halfbody_serious at pos_center with dissolve
 
-    # 3. El segundo personaje dice su primera línea centrada
-    H "Vaya siesta te has echado."
+    # 3. The second character says her first line, centered
+    H "Wow, that was some nap."
 
-    # 4. DESPUÉS de su primera línea de diálogo, el segundo personaje se mueve a la derecha
+    # 4. AFTER her first line, the second character moves to the right
     $ set_char_pos("Hanna", "right")
-    show hanna_mediocuerpo_seria at mover_der_habla
+    show hanna_halfbody_serious at move_right_talk
     with None
     $ renpy.pause(0.45, hard=False)
 
-    # 5. Continúa la conversación:
-    # Quien habla recupera tamaño y opacidad completa en su lado.
-    # Quien calla se reduce y transparenta automáticamente.
-    H "Sí que estabas cansado."
+    # 5. The conversation continues:
+    # Whoever speaks gets back full size and opacity on their side.
+    # Whoever is silent automatically shrinks and fades.
+    H "You really were tired."
 
-    H "*Enciende la luz*"
+    H "*Turns on the light*"
 
-    H "Buenos días, estamos en Marte, ¿recuerdas?"
+    H "Good morning. We're on Mars, remember?"
 
-    T "*frotándote los ojos* Solo me he echado una buena siesta... No me he quedado inconsciente."
+    T "*rubbing your eyes* I just had a good nap... I didn't pass out."
 
-    H "Anda, hazte un café, que te necesitamos fresco."
+    H "Go make yourself a coffee, we need you wide awake."
 
-    # Salida de la escena hacia la cocina
-    hide miquel_mediocuerpo
-    hide hanna_mediocuerpo_seria
+    # Leave the scene and head to the kitchen
+    hide miquel_halfbody
+    hide hanna_halfbody_serious
     with dissolve
 
     menu:
-        "Ir a la cocina":
+        "Go to the kitchen":
             pass
 
-# Escena de la cocina de la nave
-    scene bg cocina_nave with fade
+# Ship kitchen scene
+    scene bg ship_kitchen with fade
 
-    T "*Te haces un café*"
+    T "*You make yourself a coffee*"
 
-    T "Echo de menos el café de casa."
+    T "I miss the coffee back home."
 
-    T "*Mientras tomas tu café, enciendes la tablet para consultar el informe de misión y el estado de la tripulación.*"
+    T "*While drinking your coffee, you turn on the tablet to check the mission report and the crew status.*"
 
-    # Inicialización de estado de la tablet en la cocina
-    $ pantalla_actual = "reportaje"
-    $ hambre_michael = 3
-    $ sed_michael = 3
-    $ hambre_hanna = 3
-    $ sed_hanna = 3
-    $ hambre_nelson = 3
-    $ sed_nelson = 3
-    $ hambre_user = 3
-    $ sed_user = 3
+    # Initialize the tablet state in the kitchen
+    $ current_screen = "report"
+    $ crew_hunger = {"miquel": 3, "nelson": 3, "hanna": 3, "commander": 3}
+    $ crew_thirst = {"miquel": 3, "nelson": 3, "hanna": 3, "commander": 3}
 
-label bucle_tablet:
+label tablet_loop:
 
-    call screen tablet_cocina
+    call screen kitchen_tablet
 
-    $ accion_tablet = _return
+    $ tablet_action = _return
 
-    if accion_tablet in ["miquel", "hanna", "nelson", "comandante"]:
-        $ pantalla_actual = "personajes"
-        call screen ficha_personaje(accion_tablet)
-        $ pantalla_actual = "personajes"
-        jump bucle_tablet
+    if tablet_action in ["miquel", "hanna", "nelson", "commander"]:
+        $ current_screen = "crew"
+        call screen character_card(tablet_action)
+        $ current_screen = "crew"
+        jump tablet_loop
 
-    elif accion_tablet == "continuar":
-        jump llegada_asentamiento
+    elif tablet_action == "continue":
+        jump settlement_arrival
 
-label tripulacion:
-    jump bucle_tablet
+label crew_tablet:
+    jump tablet_loop
 
-label llegada_asentamiento:
+label settlement_arrival:
 
-    T "Qué buen equipo tengo..."
+    T "What a great team I have..."
 
-    T "Tengo buenas expectativas de esta misión."
+    T "I have high hopes for this mission."
 
-    show nelson_mediocuerpo at pos_centro with dissolve
+    show nelson_halfbody at pos_center with dissolve
 
-    N "Comandante, ¿estás preparado?"
+    N "Commander, are you ready?"
 
-    N "Nos vamos cuanto antes."
+    N "We're leaving as soon as possible."
 
-    T "Vámonos."
+    T "Let's go."
 
-    hide nelson_mediocuerpo with dissolve
+    hide nelson_halfbody with dissolve
 
     scene black with fade
-    "De camino al asentamiento..."
+    "On the way to the settlement..."
 
-    scene bg base_marte with fade
-    "Ya estamos en el asentamiento."
+    scene bg mars_base with fade
+    "We have arrived at the settlement."
 
-    # Diálogo con Hanna: detección del fallo en el sistema eléctrico
+    # Dialogue with Hanna: a failure is detected in the electrical system
     $ set_char_pos("Hanna", "center")
-    show hanna_mediocuerpo_seria at pos_centro with dissolve
+    show hanna_halfbody_serious at pos_center with dissolve
 
-    H "¡Comandante! Menos mal que llegas."
+    H "Commander! Thank goodness you're here."
 
-    H "He detectado un fallo grave en el sistema eléctrico de la base."
+    H "I've detected a serious failure in the base's electrical system."
 
-    H "La energía no llega a las instalaciones centrales y los paneles principales están apagados."
+    H "Power isn't reaching the central facilities and the main panels are down."
 
-    T "¿Sabemos qué está provocando la avería?"
+    T "Do we know what's causing the fault?"
 
-    H "Se trata de una sobrecarga en la caja de fusibles. Tienes que ir a revisarla y reconectar los plomos."
+    H "It's an overload in the fuse box. You need to go check it and reconnect the fuses."
 
-    T "Entendido. Voy a inspeccionar el cuadro eléctrico ahora mismo."
+    T "Understood. I'll inspect the electrical panel right away."
 
-    H "Ten mucho cuidado, Comandante: debes activar los fusibles siguiendo la secuencia exacta para restablecer el flujo sin dañar el circuito."
+    H "Be very careful, Commander: you must switch the fuses on in the exact sequence to restore the power flow without damaging the circuit."
 
-    H "Te he dejado la secuencia indicada en la pantalla del panel. ¡Buena suerte!"
+    H "I've left the sequence for you on the panel's display. Good luck!"
 
-    hide hanna_mediocuerpo_seria with dissolve
+    hide hanna_halfbody_serious with dissolve
 
-    "Te diriges hacia el panel de distribución eléctrica de la base..."
+    "You head to the base's power distribution panel..."
 
     # -------------------------------------------------------------
-    # MINIJUEGO: CUADRO ELÉCTRICO Y FUSIBLES (Importado de test1)
+    # MINIGAME: ELECTRICAL PANEL AND FUSES (imported from test1)
     # -------------------------------------------------------------
     $ sequence = renpy.random.sample(range(6), 6)
     $ fuses = [False, False, False, False, False, False]
     $ current_step = 0
     $ sequence_text = " -> ".join(str(x + 1) for x in sequence)
 
-    call screen cuadro_electrico
+    call screen electrical_panel
 
     # -------------------------------------------------------------
-    # RESOLUCIÓN TRAS COMPLETAR EL MINIJUEGO
+    # RESOLUTION AFTER COMPLETING THE MINIGAME
     # -------------------------------------------------------------
-    scene bg base_marte with fade
+    scene black with fade
 
-    "¡CLIC! El último fusible encaja en su posición correcta."
+    "CLICK! The last fuse snaps into place."
 
-    "Un zumbido potente recorre la base mientras las luces y los sistemas de ventilación vuelven a la vida."
+    "The solar panel guidance systems have come online."
+
+    "The nuclear reactor system has started up. Everything is stable and operational, with perfect safety levels."
+
+    scene bg mars_base with fade
+
+    "A powerful hum runs through the base as the lights and ventilation systems come back to life."
 
     $ set_char_pos("Hanna", "center")
-    show hanna_mediocuerpo_seria at pos_centro with dissolve
+    show hanna_halfbody_serious at pos_center with dissolve
 
-    H "¡Increíble, Comandante! La energía ha vuelto a todos los sectores."
+    H "Amazing, Commander! Power is back in every sector."
 
-    H "El sistema eléctrico está funcionando al 100%% de su capacidad."
+    H "The electrical system is running at 100%% capacity."
 
-    T "Excelente trabajo en equipo. Ahora que la base tiene energía estable, comprobemos el estado del resto de recursos."
+    T "Excellent teamwork. Now that the base has stable power, let's check the status of the rest of our resources."
 
-    hide hanna_mediocuerpo_seria with dissolve
+    hide hanna_halfbody_serious with dissolve
 
-    T "Chicos, antes de descansar, necesito que cada uno me prepare un informe detallado desde su puesto de trabajo."
+    T "Guys, before we rest, I need each of you to prepare a detailed report from your workstation."
 
-    T "Esos informes definirán nuestras misiones prioritarias para mañana."
+    T "Those reports will define our priority missions for tomorrow."
 
-    jump tripulation
+    jump crew_selection
 
 # =============================================================
-# RONDA DE INFORMES Y MISIONES PARA EL DÍA SIGUIENTE
+# ROUND OF REPORTS AND MISSIONS FOR THE NEXT DAY
 # =============================================================
-label tripulation:
+label crew_selection:
 
-    scene bg base_marte with dissolve
+    scene bg control_room_crew with dissolve
 
-    menu:
-        "¿A qué área del asentamiento deseas dirigirte?"
+    call screen crew_selection_screen
 
-        "Ir al Laboratorio de Geología (Hablar con Nelson) (Completado)" if informe_nelson:
-            jump informe_nelson_dialogo
-
-        "Ir al Laboratorio de Geología (Hablar con Nelson)" if not informe_nelson:
-            jump informe_nelson_dialogo
-
-        "Ir al Puesto de Bio-Robótica (Hablar con Hanna) (Completado)" if informe_hanna:
-            jump informe_hanna_dialogo
-
-        "Ir al Puesto de Bio-Robótica (Hablar con Hanna)" if not informe_hanna:
-            jump informe_hanna_dialogo
-
-        "Ir al Taller de Mantenimiento (Hablar con Miquel) (Completado)" if informe_miquel:
-            jump informe_miquel_dialogo
-
-        "Ir al Taller de Mantenimiento (Hablar con Miquel)" if not informe_miquel:
-            jump informe_miquel_dialogo
-
-        "Reunir al equipo y planificar el Día 2" if (informe_nelson and informe_hanna and informe_miquel):
-            jump fin_reunion_asentamiento
+    if _return == "tablet":
+        jump supplies_report
+    elif _return == "meeting":
+        jump settlement_final_meeting
 
 # -------------------------------------------------------------
-# 1. INFORME DE NELSON: INVESTIGAR LA GEOLOGÍA DE LA ZONA
+# SUPPLY REPORT (after the three reports): food and water
 # -------------------------------------------------------------
-label informe_nelson_dialogo:
+label supplies_report:
 
-    scene bg centro_nelson with fade
+    scene bg control_room_crew
+
+    T "*You take out the tablet to check the daily supply report.*"
+
+    call screen supplies_tablet
+
+    $ reveal_resources("food", "water")
+    $ supplies_checked = True
+    "New indicators added at the top of the screen: {b}FOOD{/b} and {b}WATER{/b}."
+
+    T "Food and water are at normal levels. Everything is under control... for now."
+
+    jump crew_selection
+
+# -------------------------------------------------------------
+# 1. NELSON'S REPORT: INVESTIGATE THE AREA'S GEOLOGY
+# -------------------------------------------------------------
+label nelson_report_dialogue:
+
+    scene bg nelson_station with fade
 
     $ set_char_pos("Nelson", "center")
-    show nelson at pos_centro with dissolve
+    show nelson at pos_center with dissolve
 
-    if not informe_nelson:
-        N "¡Hola, Comandante! Pasa, estaba analizando los primeros escaneos del terreno exterior."
+    if not report_nelson:
+        N "Hi, Commander! Come in. I was running a chemical analysis of the first soil samples we picked up when we landed."
 
-        T "Hola, Nelson. ¿Qué conclusiones has sacado de las muestras del suelo marciano?"
+        T "Hi, Nelson. What does the analysis show?"
 
-        show nelson pensativo with dissolve
+        show nelson thinking with dissolve
 
-        N "Las formaciones rocosas alrededor de nuestra zona de aterrizaje son fascinantes."
+        N "The spectrometer detects hydrated minerals, sulfates... and traces of lithium and silicates."
 
-        N "Los sensores espectrales muestran capas sedimentarias muy ricas en minerales hidratados y sulfatos."
+        N "As a chemist, that's very promising: some of those materials could help us store energy."
 
-        N "Aquí está mi propuesta de informe: para mañana, nuestra misión principal debe ser {b}investigar la geología de la zona{/b}."
+        N "Here is my proposal for tomorrow: {b}investigate the terrain{/b} around the base."
 
-        N "Necesitamos salir con el equipo de prospección, perforar los estratos del cráter y recolectar testigos de roca para datar la antigüedad del terreno."
+        N "If we collect samples from different areas of the crater, I can analyze them here in the lab and tell you exactly which materials we can use."
 
         show nelson with dissolve
 
-        T "Excelente informe, Nelson. Entender la geología del terreno nos dirá si este suelo es seguro para levantar nuevas estructuras."
+        T "Excellent idea, Nelson. As a geologist, I'd love to see those rock layers up close. Knowing what the ground is made of will tell us which resources we can count on."
 
-        N "Exacto. Prepararé los taladros geológicos y los contenedores estancos para la expedición de mañana."
+        N "Perfect. I'll prepare the sample containers and the portable spectrometer, just in case."
 
-        $ informe_nelson = True
-        "Has recibido y aprobado el informe geológico de Nelson para el Día 2."
+        N "One more thing, Commander. As the medical officer, I've also checked the life-support readings."
+
+        N "{b}Oxygen{/b}: we have [res_oxygen]%% in the tanks and the recyclers are working fine. Levels are normal."
+
+        N "The reserve drops about 10%% every month, so we have around ten months of margin before we run out of air."
+
+        show nelson thinking with dissolve
+
+        N "{b}Temperature{/b}: the base's thermal stability is at [res_thermal]%%. That's normal for [landing_site]."
+
+        N "It loses about 10%% every month. We can recover 15%% by spending 20 energy, but if it ever drops to 20%%, we won't be able to survive here."
+
+        show nelson with dissolve
+
+        $ reveal_resources("oxygen", "thermal")
+        "New indicators added at the top of the screen: {b}OXYGEN{/b} and {b}TEMPERATURE{/b}."
+
+        $ report_nelson = True
+        "You have received Nelson's proposal: investigate the terrain."
 
     else:
-        N "Todo el equipo geológico está listo y calibrado para la misión de mañana, Comandante."
-        T "Perfecto Nelson, descansa un poco antes de la salida."
+        N "The spectrometer and the sample containers are ready, Commander."
+        T "Perfect, Nelson. Get some rest before we head out."
 
     hide nelson with dissolve
-    jump tripulation
+    jump crew_selection
 
 # -------------------------------------------------------------
-# 2. INFORME DE HANNA: BÚSQUEDA DE VIDA EN MUESTRAS DE AGUA
+# 2. HANNA'S REPORT: SEARCHING FOR LIFE IN WATER SAMPLES
 # -------------------------------------------------------------
-label informe_hanna_dialogo:
+label hanna_report_dialogue:
 
-    scene bg centro_hanna with fade
+    scene bg hanna_station with fade
 
     $ set_char_pos("Hanna", "center")
-    show hanna at pos_centro with dissolve
+    show hanna at pos_center with dissolve
 
-    if not informe_hanna:
-        H "Comandante, estaba esperando que vinieras. Tienes que ver lo que han registrado las sondas profundas."
+    if not report_hanna:
+        H "Commander, I was waiting for you. You have to see what my robotic probes have picked up."
 
-        T "Te noto entusiasmada, Hanna. ¿Qué han detectado los sensores?"
+        T "You seem excited, Hanna. What have the sensors detected?"
 
-        show hanna sorprendida with dissolve
+        show hanna surprised with dissolve
 
-        H "A escasos tres metros bajo el regolito marciano... ¡hemos localizado bolsas de humedad y hielo salino!"
+        H "Barely three meters under the Martian regolith... the ground radar found pockets of moisture and salty ice!"
 
-        H "Esto cambia por completo nuestras prioridades científicas."
+        H "Water is the key ingredient to search for life, and it's also vital for us to survive here."
 
-        show hanna pensativa with dissolve
+        show hanna thinking with dissolve
 
-        H "El objetivo primordial del programa Aphrodite es encontrar vida más allá de la Tierra, y el agua líquida es el ingrediente clave."
+        H "My proposal for tomorrow: {b}search for water samples{/b}."
 
-        H "Mi informe para mañana establece la misión: {b}investigar muestras de agua en busca de vida extraterrestre{/b}."
+        H "I can send my drilling robot to extract samples of that underground ice, sealed in sterile capsules so they don't get contaminated."
 
-        H "Debemos extraer muestras de ese hielo subterráneo con sondas estériles y examinarlas en el microscopio biológico buscando microbios o fósiles bacterianos."
+        show hanna serious with dissolve
 
-        show hanna seria with dissolve
+        T "An impressive finding, Hanna. If the robot brings back those samples, I'll analyze them myself: as a biologist, searching for microbial life is a dream come true."
 
-        T "Un hallazgo impresionante, Hanna. Buscar vida extraterrestre es el sueño de la humanidad. Tendrás prioridad absoluta en el laboratorio mañana."
+        H "Great! I'll program the drilling robot and calibrate its sensors tonight."
 
-        H "¡Muchas gracias, Comandante! Ya estoy esterilizando las placas de cultivo y el secuenciador genético."
+        H "Before you go, let me give you the environment and communications readings."
 
-        $ informe_hanna = True
-        "Has recibido y aprobado el informe biológico de Hanna para el Día 2."
+        show hanna thinking with dissolve
+
+        H "{b}Radiation{/b}: here at [landing_site], exposure rises about [res_radiation_rate]%% every month. Right now we're at [res_radiation]%%, so levels are normal."
+
+        H "Our shielding protects us for now, but we'll have to keep an eye on it as the months go by."
+
+        show hanna serious with dissolve
+
+        H "{b}Telecommunications{/b}: the main antenna is aligned and the link with Earth is stable. Antenna status: OK."
+
+        $ reveal_resources("radiation", "antenna")
+        "New indicators added at the top of the screen: {b}RADIATION{/b} and {b}ANTENNA{/b}."
+
+        $ report_hanna = True
+        "You have received Hanna's proposal: search for water samples."
 
     else:
-        H "Los analizadores de muestras de agua están al 100%% de potencia. ¡Mañana buscaremos microorganismos marcianos!"
-        T "Buen trabajo, Hanna. Mantén todo estéril para no contaminar las muestras."
+        H "The drilling robot is programmed and ready to go, Commander."
+        T "Good job, Hanna."
 
     hide hanna with dissolve
-    jump tripulation
+    jump crew_selection
 
 # -------------------------------------------------------------
-# 3. INFORME DE MIQUEL: MANTENIMIENTO A LA BASE
+# 3. MIQUEL'S REPORT: BASE MAINTENANCE
 # -------------------------------------------------------------
-label informe_miquel_dialogo:
+label miquel_report_dialogue:
 
-    scene bg centro_miquel with fade
+    scene bg miquel_station with fade
 
     $ set_char_pos("Miquel", "center")
-    show miquel at pos_centro with dissolve
+    show miquel at pos_center with dissolve
 
-    if not informe_miquel:
-        M "¡Hombre, Comandante! Menos mal que te pasas por el hangar."
+    if not report_miquel:
+        M "Hey, Commander! Glad you stopped by the hangar."
 
-        T "Hola, Miquel. ¿Cómo se encuentran los vehículos y los sistemas del módulo tras el aterrizaje?"
+        T "Hi, Miquel. How are the vehicles and the module systems doing after the landing?"
 
-        show miquel pensativo with dissolve
+        show miquel thinking with dissolve
 
-        M "El aterrizaje fue duro y el polvo marciano se mete en todas partes. Acabo de revisar las juntas de la compuerta y los filtros exteriores."
+        M "The landing was rough and Martian dust gets in everywhere. I just checked the hatch seals and the external filters."
 
-        M "Además, con el fallo eléctrico que acabamos de reparar, las líneas de potencia y los conectores auxiliares necesitan una revisión a fondo."
+        M "Also, after the electrical failure we just fixed, the power lines and auxiliary connectors need a thorough inspection."
 
-        show miquel sonriendo with dissolve
+        show miquel smiling with dissolve
 
-        M "Por eso mi informe para mañana es vital: {b}hacer mantenimiento general a la base{/b}."
+        M "That's why my report for tomorrow is vital: {b}carry out general maintenance on the base{/b}."
 
-        M "Debemos limpiar los paneles solares del polvo marciano, reforzar los sellos de presurización de las esclusas y poner a punto los motores de los rovers para que el equipo pueda salir sin peligro."
+        M "We need to clean the Martian dust off the solar panels, reinforce the airlock pressure seals and tune up the rover engines so the team can go out safely."
 
-        T "Totalmente de acuerdo, Miquel. Sin una base segura y presurizada, ningún científico podrá hacer su trabajo. Tu misión es la columna vertebral del equipo."
+        T "Totally agree, Miquel. Without a safe, pressurized base, no scientist can do their job. Your mission is the backbone of the team."
 
-        M "¡Cuenta con ello, jefe! Mañana dejaré la base como recién salida de fábrica."
+        M "Count on it, boss! Tomorrow I'll leave the base looking brand new."
 
-        $ informe_miquel = True
-        "Has recibido y aprobado el informe de mantenimiento de Miquel para el Día 2."
+        M "Oh, and here's the power report."
+
+        M "{b}Energy{/b}: after the repair, the batteries are at [res_energy]%%. That's a normal level for this site."
+
+        M "At first the solar panels add about 1%% per day, and around 15%% per month. Every task that uses power costs energy, so let's use it wisely."
+
+        $ reveal_resources("energy")
+        "New indicator added at the top of the screen: {b}ENERGY{/b}."
+
+        $ report_miquel = True
+        "You have received Miquel's proposal: general maintenance of the base."
 
     else:
-        M "Tengo las llaves dinamométricas y los filtros de repuesto listos para el mantenimiento de mañana."
-        T "Bien hecho, Miquel. Nos vemos en la reunión final."
+        M "I've got the torque wrenches and spare filters ready for tomorrow's maintenance."
+        T "Well done, Miquel. See you at the final meeting."
 
     hide miquel with dissolve
-    jump tripulation
+    jump crew_selection
 
 # =============================================================
-# REUNIÓN FINAL DE LA TRIPULACIÓN: PLANIFICACIÓN DEL DÍA 2
+# FINAL CREW MEETING: PLANNING DAY 2
 # =============================================================
-label fin_reunion_asentamiento:
+label settlement_final_meeting:
 
-    scene bg base_marte with fade
+    scene bg mars_base with fade
 
-    "Con los tres informes en mano, reúnes a toda la tripulación en la sala central de mando de la base."
+    "With the three reports in hand, you gather the whole crew in the base's central command room."
 
-    # Aparecen los tres tripulantes en sus puestos
+    # The three crew members appear at their positions
     $ set_char_pos("Nelson", "left")
     $ set_char_pos("Hanna", "center")
     $ set_char_pos("Miquel", "right")
 
-    show nelson at pos_izq_idle
-    show hanna at pos_centro_idle
-    show miquel at pos_der_idle
+    show nelson at pos_left_idle
+    show hanna at pos_center_idle
+    show miquel at pos_right_idle
     with dissolve
 
-    T "Tripulación de la misión Aphrodite 3: hemos superado el viaje espacial, el aterrizaje y la primera emergencia eléctrica."
+    T "Crew of the Aphrodite 3 mission: we have made it through the space journey, the landing and our first electrical emergency."
 
-    T "He revisado vuestros tres informes y cada uno tiene una misión esencial para mañana:"
+    T "I've read your three proposals:"
 
-    T "1. {b}Miquel:{/b} Realizará el mantenimiento general de la base, limpiando paneles solares y asegurando los rovers."
+    T "1. {b}Miquel:{/b} general maintenance of the base, cleaning the solar panels and checking the rovers."
 
-    T "2. {b}Nelson:{/b} Liderará la expedición exterior para investigar la geología del terreno y perforar los estratos rocosos."
+    T "2. {b}Nelson:{/b} go out and investigate the terrain, collecting samples to analyze their chemical composition."
 
-    T "3. {b}Hanna:{/b} Procesará las muestras de agua subterránea en el laboratorio en busca de biofirmas y vida extraterrestre."
+    T "3. {b}Hanna:{/b} send the drilling robot to extract samples of the underground ice."
 
-    show miquel sonriendo at pos_der_habla with dissolve
-    M "¡Entendido, Comandante! La base estará en las mejores manos."
+    T "Tomorrow morning I'll decide which mission we carry out first."
 
-    show hanna seria at pos_centro_habla with dissolve
-    H "Los microscopios están listos. Espero que mañana hagamos historia."
+    show miquel smiling at pos_right_talk with dissolve
+    M "Understood, Commander! Whatever you decide, the base will be in the best hands."
 
-    show nelson at pos_izq_habla with dissolve
-    N "Será un día de grandes descubrimientos geológicos. ¡A por todas, equipo!"
+    show hanna serious at pos_center_talk with dissolve
+    H "My drilling robot will be ready whenever you need it."
 
-    T "Buen trabajo a todos en nuestro primer día en el planeta rojo. Ahora, a descansar."
+    show nelson at pos_left_talk with dissolve
+    N "And my spectrometer is calibrated. We'll be ready."
 
-    # Despedida y transición de noche
+    T "Great work, everyone, on our first day on the red planet."
+
+    T "Get some good rest tonight, because tomorrow will be the first official day of our new life on Mars."
+
+    # Farewell
     hide nelson
     hide hanna
     hide miquel
     with dissolve
 
+    # Night transition
     scene black with fade
 
-    "Las luces de la base marciana se atenúan al entrar en ciclo nocturno."
+    "The lights of the Martian base dim as it enters its night cycle."
 
-    "La tripulación de la Aphrodite 3 descansa en sus camarotes, recuperando energías tras un viaje de millones de kilómetros..."
+    "The Aphrodite 3 crew rests in their quarters, recovering their energy after a journey of millions of kilometers..."
 
-    "El primer día en Marte ha concluido con éxito."
+    "The first day on Mars has come to a successful end."
 
-    "DÍA 2: COMIENZA LA EXPLORACIÓN..."
-
-    # Fin del Día 1
-    return
+    # End of Day 1 -> Day 2
+    jump day_2
 
 
 
 # =============================================================
-# SISTEMA DE TABLET INTERACTIVA Y FICHAS DE PERSONAJES (COCINA)
+# INTERACTIVE TABLET SYSTEM AND CHARACTER CARDS (KITCHEN)
 # =============================================================
 
-# VARIABLES DE LA TABLET
-default pantalla_actual = "reportaje"
+# TABLET VARIABLES
+default current_screen = "report"
 
-default hambre_michael = 3
-default sed_michael = 3
-default hambre_hanna = 3
-default sed_hanna = 3
-default hambre_nelson = 3
-default sed_nelson = 3
-default hambre_user = 3
-default sed_user = 3
+default supplies_checked = False
 
 
-# INDICADOR DE NECESIDADES (COMIDA Y AGUA)
-screen indicador_necesidad(valor, tipo, x, y):
+# NEEDS INDICATOR (FOOD AND WATER)
+screen need_indicator(value, kind, x, y):
 
-    if tipo == "hambre":
-        if valor == 3:
+    if kind == "hunger":
+        if value == 3:
             $ color = "#F4A340"
-        elif valor == 2:
+        elif value == 2:
             $ color = "#e5622a"
         else:
             $ color = "#b41616"
 
-    elif tipo == "sed":
-        if valor == 3:
+    elif kind == "thirst":
+        if value == 3:
             $ color = "#43B8D8"
-        elif valor == 2:
+        elif value == 2:
             $ color = "#177fab"
         else:
             $ color = "#114482"
@@ -437,7 +474,7 @@ screen indicador_necesidad(valor, tipo, x, y):
         spacing 4
 
         for i in range(3):
-            if i < valor:
+            if i < value:
                 frame:
                     xsize 32
                     ysize 16
@@ -451,13 +488,39 @@ screen indicador_necesidad(valor, tipo, x, y):
                     background Solid("#BDBDBD")
 
 
-# SCREEN DE LA TABLET
-screen tablet_cocina():
+# TABLET SCREEN
+screen kitchen_tablet():
 
-    # Sombra de fondo sobre la cocina
+    # Background shadow over the kitchen
     add Solid("#00000066")
 
-    if pantalla_actual == "reportaje":
+    # NOTIFICATION IN THE TOP-LEFT CORNER (WITHOUT COVERING THE TABLET)
+    frame:
+        xpos 50
+        ypos 50
+        xsize 500
+        background Solid("#0f172ae6")
+        padding (24, 20)
+
+        vbox:
+            spacing 10
+
+            hbox:
+                spacing 10
+                text "ℹ️" size 22
+                text "TABLET INSTRUCTIONS" size 19 bold True color "#38bdf8"
+
+            null height 2
+
+            text "1. Go to the top of the tablet and tap the {b}Crew icon{/b}." size 16 color "#e2e8f0"
+
+            text "2. Once inside, {b}click on each person{/b} to view their full body and their profile." size 16 color "#e2e8f0"
+
+            null height 2
+
+            text "• When you have finished reviewing the team, press the button at the bottom to continue the mission." size 14 italic True color "#94a3b8"
+
+    if current_screen == "report":
         add "images/tablet_report.png":
             xalign 0.5
             yalign 0.65
@@ -476,125 +539,120 @@ screen tablet_cocina():
             vbox:
                 spacing 14
 
-                text "INFORME DE MISIÓN":
+                text "MISSION REPORT":
                     size 26
                     bold True
                     color "#0f172a"
 
-                text "PROGRAMA APHRODITE 3 (2052)":
+                text "APHRODITE 3 PROGRAM (2052)":
                     size 17
                     bold True
                     color "#0284c7"
 
-                text "El programa Aphrodite de la NASA tiene dos objetivos históricos fundamentales: la búsqueda formal de biofirmas de vida extraterrestre y el asentamiento científico permanente en Marte.":
+                text "The URA's Aphrodite program has two fundamental, historic goals: the formal search for biosignatures of extraterrestrial life and a permanent scientific settlement on Mars.":
                     size 17
                     color "#334155"
 
-                text "ZONA DE ATERRIZAJE SELECCIONADA:":
+                text "SELECTED LANDING ZONE:":
                     size 17
                     bold True
                     color "#0284c7"
 
-                text "Tras evaluar las opciones en Control de Misión, el Comandante fijó las coordenadas en [lugar_aterrizaje], una región clave con formaciones sedimentarias y alto potencial biológico.":
+                text "After evaluating the options at Mission Control, the Commander set the coordinates to [landing_site], a key region with sedimentary formations and high biological potential.":
                     size 17
                     color "#334155"
 
-                text "TRAVESÍA ESPACIAL:":
+                text "SPACE JOURNEY:":
                     size 17
                     bold True
                     color "#0284c7"
 
-                text "La nave despegó el 6 de junio de 2052 (18:00 UTC). Tras 6 meses y 2 días de travesía por el espacio profundo y una compleja maniobra de frenado orbital, el módulo tocó suelo con éxito.":
+                text "The ship lifted off on June 6, 2052 (18:00 UTC). After 6 months and 2 days crossing deep space and a complex orbital braking maneuver, the module touched down successfully.":
                     size 17
                     color "#334155"
 
-                text "ESTADO TRAS EL ATERRIZAJE:":
+                text "STATUS AFTER LANDING:":
                     size 17
                     bold True
                     color "#0284c7"
 
-                text "Han transcurrido aproximadamente 2 horas desde el contacto. Tras una siesta reparadora en el módulo, la tripulación se reúne en la cocina para planificar el desembarco hacia la base marciana.":
+                text "About 2 hours have passed since touchdown. After a restorative nap in the module, the crew meets in the kitchen to plan the trip to the Martian base.":
                     size 17
                     color "#334155"
 
                 null height 10
 
-                text "💡 Consulta la pestaña de 'Personajes' para revisar el estado y perfil de cada miembro del equipo.":
+                text "💡 Check the 'Crew' tab to review the status and profile of each team member.":
                     size 15
                     italic True
                     color "#64748b"
 
 
-    elif pantalla_actual == "personajes":
+    elif current_screen == "crew":
         add "images/tablet_personajes.png":
             xalign 0.5
             yalign 0.65
             zoom 0.75
 
-        # Indicadores con suministros llenos (3/3)
-        use indicador_necesidad(hambre_michael, "hambre", 790, 620)
-        use indicador_necesidad(sed_michael, "sed", 790, 575)
+        # Indicators with full supplies (3/3)
+        use need_indicator(crew_hunger["miquel"], "hunger", 790, 620)
+        use need_indicator(crew_thirst["miquel"], "thirst", 790, 575)
 
-        use indicador_necesidad(hambre_hanna, "hambre", 790, 920)
-        use indicador_necesidad(sed_hanna, "sed", 790, 875)
+        use need_indicator(crew_hunger["hanna"], "hunger", 790, 920)
+        use need_indicator(crew_thirst["hanna"], "thirst", 790, 875)
 
-        use indicador_necesidad(hambre_nelson, "hambre", 1050, 620)
-        use indicador_necesidad(sed_nelson, "sed", 1050, 575)
+        use need_indicator(crew_hunger["nelson"], "hunger", 1050, 620)
+        use need_indicator(crew_thirst["nelson"], "thirst", 1050, 575)
 
-        use indicador_necesidad(hambre_user, "hambre", 1050, 915)
-        use indicador_necesidad(sed_user, "sed", 1050, 870)
+        use need_indicator(crew_hunger["commander"], "hunger", 1050, 915)
+        use need_indicator(crew_thirst["commander"], "thirst", 1050, 870)
 
-        # 4 BOTONES INVISIBLES SOBRE CADA PERSONAJE:
-        # 1. Miquel (Arriba Izquierda)
+        # 4 INVISIBLE BUTTONS OVER EACH CHARACTER:
+        # 1. Miquel (Top left)
         button:
             xpos 660
             ypos 370
             xsize 270
             ysize 285
             background None
-            hover_background Solid("#38bdf822")
             action Return("miquel")
 
-        # 2. Nelson (Arriba Derecha)
+        # 2. Nelson (Top right)
         button:
             xpos 940
             ypos 370
             xsize 270
             ysize 285
             background None
-            hover_background Solid("#38bdf822")
             action Return("nelson")
 
-        # 3. Hanna (Abajo Izquierda)
+        # 3. Hanna (Bottom left)
         button:
             xpos 660
             ypos 670
             xsize 270
             ysize 285
             background None
-            hover_background Solid("#38bdf822")
             action Return("hanna")
 
-        # 4. Comandante / Tú (Abajo Derecha)
+        # 4. Commander / You (Bottom right)
         button:
             xpos 940
             ypos 670
             xsize 270
             ysize 285
             background None
-            hover_background Solid("#38bdf822")
-            action Return("comandante")
+            action Return("commander")
 
 
-    # BOTONES SUPERIORES DE NAVEGACIÓN EN LA TABLET
+    # TOP NAVIGATION BUTTONS ON THE TABLET
     button:
         xpos 700
         ypos 269
         xsize 65
         ysize 65
         background None
-        hover_background Solid("#ffffff22")
-        action SetVariable("pantalla_actual", "reportaje")
+        action SetVariable("current_screen", "report")
 
     button:
         xpos 802
@@ -602,36 +660,35 @@ screen tablet_cocina():
         xsize 65
         ysize 65
         background None
-        hover_background Solid("#ffffff22")
-        action SetVariable("pantalla_actual", "personajes")
+        action SetVariable("current_screen", "crew")
 
 
-    # BOTÓN INFERIOR: GUARDAR TABLET Y CONTINUAR HACIA EL ASENTAMIENTO
+    # BOTTOM BUTTON: PUT AWAY THE TABLET AND CONTINUE TO THE SETTLEMENT
     frame:
         xalign 0.5
         ypos 1010
         background Solid("#0f172af2")
         padding (24, 8)
 
-        textbutton "GUARDAR TABLET Y CONTINUAR MISIÓN ▶":
+        textbutton "PUT AWAY TABLET AND CONTINUE MISSION ▶":
             text_size 20
             text_bold True
             text_color "#38bdf8"
             text_hover_color "#ffffff"
-            action Return("continuar")
+            action Return("continue")
 
 
-# SCREEN DE DETALLE DE PERSONAJE (EN LA COCINA)
-screen ficha_personaje(quien):
+# CHARACTER DETAIL SCREEN (IN THE KITCHEN)
+screen character_card(who):
 
-    # Fondo único de la cocina
-    add "bg cocina_nave"
+    # Kitchen background
+    add "bg ship_kitchen"
 
-    # Oscurecimiento de fondo para destacar la ficha técnica
+    # Darken the background to highlight the profile card
     add Solid("#00000055")
 
-    # Si es un compañero (Miquel, Hanna, Nelson): recuadro gris azulado con cuerpo entero y características
-    if quien in ["miquel", "hanna", "nelson"]:
+    # If it's a crewmate (Miquel, Hanna, Nelson): blue-gray box with full-body image and profile
+    if who in ["miquel", "hanna", "nelson"]:
         frame:
             xalign 0.5
             yalign 0.44
@@ -644,45 +701,45 @@ screen ficha_personaje(quien):
                 spacing 40
                 yalign 0.5
 
-                # Contenedor de la imagen de cuerpo entero
+                # Full-body image container
                 frame:
                     xsize 440
                     ysize 750
                     background Solid("#0f172a99")
                     padding (10, 10)
 
-                    if quien == "miquel":
+                    if who == "miquel":
                         add "images/characters/miquel_cuerpoentero.png":
                             xalign 0.5
                             yalign 1.0
                             ysize 730
                             fit "contain"
-                    elif quien == "hanna":
+                    elif who == "hanna":
                         add "images/characters/hanna_cuerpoentero.png":
                             xalign 0.5
                             yalign 1.0
                             ysize 730
                             fit "contain"
-                    elif quien == "nelson":
+                    elif who == "nelson":
                         add "images/characters/nelson_cuerpoentero.png":
                             xalign 0.5
                             yalign 1.0
                             ysize 730
                             fit "contain"
 
-                # Bloque de características técnicas
+                # Technical profile block
                 vbox:
                     spacing 16
                     xsize 900
                     yalign 0.5
 
-                    if quien == "miquel":
+                    if who == "miquel":
                         text "MIQUEL":
                             size 44
                             bold True
                             color "#7ed957"
 
-                        text "Piloto de la Misión & Ingeniero Mecánico":
+                        text "Mission Pilot & Mechanical Engineer":
                             size 24
                             bold True
                             color "#94a3b8"
@@ -696,19 +753,19 @@ screen ficha_personaje(quien):
 
                             vbox:
                                 spacing 12
-                                text "{b}• Edad:{/b} 29 años" size 20 color "#e2e8f0"
-                                text "{b}• Origen:{/b} Catalán / Estadounidense" size 20 color "#e2e8f0"
-                                text "{b}• Especialidad:{/b} Pilotaje orbital, sistemas mecánicos de aterrizaje y mantenimiento de hábitats." size 20 color "#e2e8f0"
-                                text "{b}• Rol en la misión:{/b} Responsable de las maniobras de navegación de la nave Aphrodite 3, de los sistemas motrices de los rovers y de la integridad mecánica de la base." size 20 color "#e2e8f0"
-                                text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (Plenamente operativo)" size 20 color "#7ed957"
+                                text "{b}• Age:{/b} 29 years old" size 20 color "#e2e8f0"
+                                text "{b}• Origin:{/b} Catalan / American" size 20 color "#e2e8f0"
+                                text "{b}• Specialty:{/b} Orbital piloting, mechanical landing systems and habitat maintenance." size 20 color "#e2e8f0"
+                                text "{b}• Mission role:{/b} In charge of the Aphrodite 3 ship's navigation maneuvers, the rovers' drive systems and the mechanical integrity of the base." size 20 color "#e2e8f0"
+                                text "{b}• Supply status:{/b} Food 3/3 | Water 3/3 (Fully operational)" size 20 color "#7ed957"
 
-                    elif quien == "hanna":
+                    elif who == "hanna":
                         text "HANNA":
                             size 44
                             bold True
                             color "#ff751f"
 
-                        text "Especialista en Robótica & Telecomunicaciones":
+                        text "Robotics & Telecommunications Specialist":
                             size 24
                             bold True
                             color "#94a3b8"
@@ -722,19 +779,19 @@ screen ficha_personaje(quien):
 
                             vbox:
                                 spacing 12
-                                text "{b}• Edad:{/b} 31 años" size 20 color "#e2e8f0"
-                                text "{b}• Origen:{/b} Japonesa" size 20 color "#e2e8f0"
-                                text "{b}• Especialidad:{/b} Redes de telecomunicación espacial, bio-robótica e instrumentación de laboratorio." size 20 color "#e2e8f0"
-                                text "{b}• Rol en la misión:{/b} Gestión del enlace cuántico con la Tierra, calibración de sensores espectrométricos y dirección del instrumental robótico de prospección." size 20 color "#e2e8f0"
-                                text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (Plenamente operativa)" size 20 color "#ff751f"
+                                text "{b}• Age:{/b} 31 years old" size 20 color "#e2e8f0"
+                                text "{b}• Origin:{/b} Japanese" size 20 color "#e2e8f0"
+                                text "{b}• Specialty:{/b} Robotics, space telecommunication networks and robotic probes." size 20 color "#e2e8f0"
+                                text "{b}• Mission role:{/b} Managing the link with Earth, maintaining the antennas and sensors, and directing the drilling and prospecting robots." size 20 color "#e2e8f0"
+                                text "{b}• Supply status:{/b} Food 3/3 | Water 3/3 (Fully operational)" size 20 color "#ff751f"
 
-                    elif quien == "nelson":
+                    elif who == "nelson":
                         text "NELSON":
                             size 44
                             bold True
                             color "#f423a3"
 
-                        text "Oficial Médico & Bioquímico de la Expedición":
+                        text "Expedition Medical Officer & Chemist":
                             size 24
                             bold True
                             color "#94a3b8"
@@ -748,14 +805,14 @@ screen ficha_personaje(quien):
 
                             vbox:
                                 spacing 12
-                                text "{b}• Edad:{/b} 34 años" size 20 color "#e2e8f0"
-                                text "{b}• Origen:{/b} Senegalés" size 20 color "#e2e8f0"
-                                text "{b}• Especialidad:{/b} Fisiología espacial, química analítica y soporte vital ambiental." size 20 color "#e2e8f0"
-                                text "{b}• Rol en la misión:{/b} Monitorización biológica de la tripulación, análisis químico de muestras del suelo y supervisión de los sistemas de filtrado de aire y agua." size 20 color "#e2e8f0"
-                                text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (Plenamente operativo)" size 20 color "#f423a3"
+                                text "{b}• Age:{/b} 34 years old" size 20 color "#e2e8f0"
+                                text "{b}• Origin:{/b} Senegalese" size 20 color "#e2e8f0"
+                                text "{b}• Specialty:{/b} Space medicine, analytical chemistry and life support." size 20 color "#e2e8f0"
+                                text "{b}• Mission role:{/b} Looking after the crew's health, chemical analysis of soil samples and supervision of the life-support systems (air, water and temperature)." size 20 color "#e2e8f0"
+                                text "{b}• Supply status:{/b} Food 3/3 | Water 3/3 (Fully operational)" size 20 color "#f423a3"
 
-    # Si el jugador se clica a sí mismo (Comandante): solo características, sin foto de cuerpo entero
-    elif quien == "comandante":
+    # If the player clicks on themselves (Commander): profile only, no full-body picture
+    elif who == "commander":
         frame:
             xalign 0.5
             yalign 0.44
@@ -768,12 +825,12 @@ screen ficha_personaje(quien):
                 spacing 20
                 yalign 0.5
 
-                text "COMANDANTE (TÚ)":
+                text "COMMANDER (YOU)":
                     size 44
                     bold True
                     color "#8c52ff"
 
-                text "Líder de la Expedición Aphrodite 3 & Dirección Científica":
+                text "Aphrodite 3 Expedition Leader & Scientific Director":
                     size 24
                     bold True
                     color "#94a3b8"
@@ -785,20 +842,20 @@ screen ficha_personaje(quien):
 
                     vbox:
                         spacing 14
-                        text "{b}• Rango:{/b} Comandante en Jefe de la misión marciana Aphrodite 3." size 21 color "#e2e8f0"
-                        text "{b}• Especialidad:{/b} Biólogo y geólogo planetario." size 21 color "#e2e8f0"
-                        text "{b}• Responsabilidades:{/b} Máxima autoridad en la toma de decisiones estratégicas, asignación y aprobación de misiones operativas, y coordinación científica del asentamiento." size 21 color "#e2e8f0"
-                        text "{b}• Objetivo Principal:{/b} Garantizar la supervivencia de la tripulación, liderar la prospección de biofirmas y asegurar la habitabilidad a largo plazo en Marte." size 21 color "#e2e8f0"
-                        text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (En perfectas condiciones)" size 21 color "#8c52ff"
+                        text "{b}• Rank:{/b} Commander-in-Chief of the Aphrodite 3 Mars mission." size 21 color "#e2e8f0"
+                        text "{b}• Specialty:{/b} Planetary biologist and geologist." size 21 color "#e2e8f0"
+                        text "{b}• Responsibilities:{/b} Highest authority for strategic decisions, assignment and approval of operational missions, and scientific coordination of the settlement." size 21 color "#e2e8f0"
+                        text "{b}• Main Objective:{/b} Ensure the crew's survival, lead the search for biosignatures and secure long-term habitability on Mars." size 21 color "#e2e8f0"
+                        text "{b}• Supply status:{/b} Food 3/3 | Water 3/3 (In perfect condition)" size 21 color "#8c52ff"
 
-    # Botón en la esquina inferior izquierda: Volver a la tablet
+    # Button in the bottom-left corner: back to the tablet
     frame:
         xpos 60
         ypos 970
         background Solid("#0f172af5")
         padding (22, 10)
 
-        textbutton "◀  VOLVER A LA TABLET":
+        textbutton "◀  BACK TO THE TABLET":
             text_size 22
             text_bold True
             text_color "#38bdf8"

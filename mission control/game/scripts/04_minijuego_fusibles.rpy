@@ -1,7 +1,7 @@
-## 04_minijuego_fusibles.rpy - Minijuego de fusibles del panel eléctrico (Importado de test1 y adaptado a 1080p)
+## 04_minijuego_fusibles.rpy - Electrical panel fuse minigame (imported from test1 and adapted to 1080p)
 
 # =========================================
-# VARIABLES DEL PANEL ELÉCTRICO
+# ELECTRICAL PANEL VARIABLES
 # =========================================
 default fuses = [False, False, False, False, False, False]
 default sequence = []
@@ -9,20 +9,20 @@ default current_step = 0
 default sequence_text = ""
 
 # =========================================
-# PANTALLA PRINCIPAL: CUADRO ELÉCTRICO
+# MAIN SCREEN: ELECTRICAL PANEL
 # =========================================
-screen cuadro_electrico():
+screen electrical_panel():
 
-    # Fondo oscuro técnico del panel
+    # Dark technical background of the panel
     add Solid("#070d18")
 
-    # Imagen del cuadro eléctrico centrado
+    # Centered electrical panel image
     add "images/cuadro_electrico.png":
         xalign 0.5
         yalign 0.5
         zoom 1.25
 
-    # Banner superior con la secuencia que debe seguir el jugador
+    # Top banner with the sequence the player must follow
     frame:
         xalign 0.5
         ypos 30
@@ -33,7 +33,7 @@ screen cuadro_electrico():
             xalign 0.5
             spacing 6
 
-            text "PANEL DE DISTRIBUCIÓN ELÉCTRICA - SECUENCIA DE FUSIBLES":
+            text "POWER DISTRIBUTION PANEL - FUSE SEQUENCE":
                 size 20
                 color "#60a5fa"
                 bold True
@@ -45,13 +45,13 @@ screen cuadro_electrico():
                 bold True
                 xalign 0.5
 
-    # Coordenadas adaptadas para resolución 1920x1080
+    # Coordinates adapted to 1920x1080 resolution
     $ x_start = 590
     $ y_start = 225
     $ x_spacing = 248
     $ y_spacing = 400
 
-    # Render de los 6 fusibles interactivos
+    # Render the 6 interactive fuses
     for i in range(6):
 
         $ x_pos = int(x_start + (i % 3) * x_spacing)
@@ -79,7 +79,7 @@ screen cuadro_electrico():
             )
 
 # =========================================
-# PANTALLA DE ERROR: SECUENCIA INCORRECTA
+# ERROR SCREEN: WRONG SEQUENCE
 # =========================================
 screen wrong_sequence():
 
@@ -102,18 +102,18 @@ screen wrong_sequence():
             yalign 0.5
             spacing 20
 
-            text "SECUENCIA INCORRECTA":
+            text "WRONG SEQUENCE":
                 size 46
                 color "#ef4444"
                 bold True
                 xalign 0.5
 
-            text "Has activado el fusible equivocado.":
+            text "You switched on the wrong fuse.":
                 size 26
                 color "#f1f5f9"
                 xalign 0.5
 
-            text "La secuencia correcta es:":
+            text "The correct sequence is:":
                 size 22
                 color "#94a3b8"
                 xalign 0.5
@@ -126,7 +126,7 @@ screen wrong_sequence():
 
             null height 10
 
-            textbutton "REINTENTAR":
+            textbutton "TRY AGAIN":
                 xalign 0.5
                 text_size 26
                 text_color "#ffffff"

@@ -1,74 +1,74 @@
-## 02_mission_intro.rpy - Introducción reestructurada: Rueda de Prensa -> Control de Misión -> Mapa
+## 02_mission_intro.rpy - Restructured introduction: Press Conference -> Mission Control -> Map
 
 label intro_aphrodite:
 
-    # 1. Rueda de Prensa: Presentación pública del programa y la misión Aphrodite 3
-    scene bg rueda_prensa with fade
+    # 1. Press conference: public presentation of the program and the Aphrodite 3 mission
+    scene bg press_conference with fade
 
-    c "Estamos en el año 2052."
+    c "The year is 2052."
 
-    c "La tecnología ha avanzado tanto que la NASA está llevando a cabo el programa más ambicioso de la historia de la humanidad..."
+    c "Technology has advanced so much that the United Robotics Association (URA) is carrying out the most ambitious program in human history..."
 
-    c "Se trata del programa Aphrodite, el cual tiene dos principales objetivos:"
+    c "It is called the Aphrodite program, and it has two main goals:"
 
-    c "Buscar vida más allá de la Tierra..."
+    c "To search for life beyond Earth..."
 
-    c "Y crear asentamientos científicos de larga duración en otros planetas."
+    c "And to build long-term scientific settlements on other planets."
 
-    c "Hoy se anuncia al mundo el lanzamiento de la misión Aphrodite 3."
+    c "Today, the launch of the Aphrodite 3 mission is being announced to the world."
 
-    c "El objetivo principal es llevar recursos al asentamiento desarrollado en las misiones Aphrodite 1 y 2..."
+    c "Its main objective is to bring supplies to the settlement built during the Aphrodite 1 and 2 missions..."
 
-    c "Y dar comienzo formal a la búsqueda de biofirmas y vida en la superficie de Marte."
+    c "And to formally begin the search for biosignatures and life on the surface of Mars."
 
-    # 2. Centro de Control de Misión: Tu papel como comandante
+    # 2. Mission Control Center: your role as commander
     scene bg control_mission with fade
 
-    c "Nos encontramos en las instalaciones de Control de Misión de la NASA."
+    c "We are now inside the URA Mission Control facilities."
 
-    c "Tú eres el comandante de la misión Aphrodite 3."
+    c "You are the commander of the Aphrodite 3 mission."
 
-    c "El cohete y la tripulación están listos para partir hacia el planeta rojo..."
+    c "The rocket and the crew are ready to depart for the red planet..."
 
-    c "Pero antes de fijar el rumbo final, tú como comandante tendrás que tomar una decisión crucial."
+    c "But before setting the final course, you, as commander, must make a crucial decision."
 
-    c "Debes analizar los informes de viabilidad científica y decidir el lugar de aterrizaje de la expedición."
+    c "You must analyze the scientific feasibility reports and choose the expedition's landing site."
 
-    c "Cargando mapa cartográfico de Marte..."
+    c "Loading cartographic map of Mars..."
 
-    # Pre-cargar en memoria VRAM las imágenes de las fichas para que abran al instante
+    # Preload the site card images into VRAM so they open instantly
     $ renpy.start_predict("images/crater_mawrth.png", "images/crater_eberswalde.png", "images/crater_holden.png", "images/crater_gale.png", "images/fondo_tech.png")
 
-    # 3. Pantalla interactiva del mapa de Marte (selección de sitio)
-    call screen mapa_interactivo
+    # 3. Interactive Mars map screen (site selection)
+    call screen interactive_map
 
     $ renpy.stop_predict("images/crater_mawrth.png", "images/crater_eberswalde.png", "images/crater_holden.png", "images/crater_gale.png", "images/fondo_tech.png")
 
 # =============================================================
-# 4. Confirmación tras elegir el sitio de aterrizaje en el mapa
+# 4. Confirmation after choosing the landing site on the map
 # =============================================================
-label confirmar_aterrizaje:
+label confirm_landing:
 
     scene bg control_mission with dissolve
 
-    c "Coordenadas de aterrizaje fijadas en [lugar_aterrizaje]."
+    c "Landing coordinates locked on [landing_site]."
 
-    c "Datos de telemetría cargados con éxito en la computadora de navegación de la nave."
+    c "Telemetry data successfully uploaded to the ship's navigation computer."
 
-    c "Todo listo. Iniciando cuenta atrás para el despegue..."
+    c "All set. Starting the launch countdown..."
 
-    # Transición al viaje espacial y aterrizaje
+    # Transition to the space journey and landing
     scene black with fade
 
-    c "El lanzamiento de la nave se llevó a cabo el pasado 6 de Junio, del 2052, a las 18:00 UTC."
+    c "The ship was launched on June 6, 2052, at 18:00 UTC."
 
-    c "Después de 6 meses y 2 días de travesía por el espacio..."
+    c "After 6 months and 2 days travelling through space..."
 
-    c "Y tras una maniobra de inserción orbital y frenado complicada..."
+    c "And after a difficult orbital insertion and braking maneuver..."
 
-    c "¡Habéis logrado aterrizar con éxito en [lugar_aterrizaje]!"
+    c "You have successfully landed at [landing_site]!"
 
-    c "Ahora ya habrán pasado unas 2 horas..."
+    c "About 2 hours have passed since then..."
 
-    # Salto a la nave tras el aterrizaje (despertar, Miquel, Hanna, café...)
-    jump despertar_nave
+    # Jump to the ship after landing (wake-up, Miquel, Hanna, coffee...)
+    jump ship_wakeup
