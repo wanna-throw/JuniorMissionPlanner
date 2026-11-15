@@ -56,47 +56,43 @@ label despertar_nave:
         "Ir a la cocina":
             pass
 
-    # Escena de la cocina de la nave
+# Escena de la cocina de la nave
     scene bg cocina_nave with fade
 
     T "*Te haces un café*"
 
     T "Echo de menos el café de casa."
 
-    T "*Mientras tomas tu café, revisas la información de la tablet.*"
+    T "*Mientras tomas tu café, enciendes la tablet para consultar el informe de misión y el estado de la tripulación.*"
+
+    # Inicialización de estado de la tablet en la cocina
+    $ pantalla_actual = "reportaje"
+    $ hambre_michael = 3
+    $ sed_michael = 3
+    $ hambre_hanna = 3
+    $ sed_hanna = 3
+    $ hambre_nelson = 3
+    $ sed_nelson = 3
+    $ hambre_user = 3
+    $ sed_user = 3
+
+label bucle_tablet:
+
+    call screen tablet_cocina
+
+    $ accion_tablet = _return
+
+    if accion_tablet in ["miquel", "hanna", "nelson", "comandante"]:
+        $ pantalla_actual = "personajes"
+        call screen ficha_personaje(accion_tablet)
+        $ pantalla_actual = "personajes"
+        jump bucle_tablet
+
+    elif accion_tablet == "continuar":
+        jump llegada_asentamiento
 
 label tripulacion:
-
-    menu:
-        "¿Sobre quién quieres consultar información?"
-
-        "Hanna":
-            show hanna_cuerpoentero at pos_centro with dissolve
-            H "Mujer, 31 años, Japonesa."
-            H "Encargada de la Robótica y las Telecomunicaciones de la nave."
-            hide hanna_cuerpoentero with dissolve
-            jump tripulacion
-
-        "Miquel":
-            show miquel_cuerpoentero at pos_centro with dissolve
-            M "Hombre, 29 años, Catalán / Estadounidense."
-            M "Piloto e ingeniero mecánico."
-            hide miquel_cuerpoentero with dissolve
-            jump tripulacion
-
-        "Nelson":
-            show nelson_cuerpoentero at pos_centro with dissolve
-            N "Hombre, 34 años, Senegalés."
-            N "Médico y químico."
-            hide nelson_cuerpoentero with dissolve
-            jump tripulacion
-
-        "Comandante (Tú)":
-            T "Comandante de la misión. Biólogo y geólogo."
-            jump tripulacion
-
-        "Continuar":
-            jump llegada_asentamiento
+    jump bucle_tablet
 
 label llegada_asentamiento:
 
@@ -396,3 +392,415 @@ label fin_reunion_asentamiento:
 
     # Fin del Día 1
     return
+
+
+
+# =============================================================
+# SISTEMA DE TABLET INTERACTIVA Y FICHAS DE PERSONAJES (COCINA)
+# =============================================================
+
+# VARIABLES DE LA TABLET
+default pantalla_actual = "reportaje"
+
+default hambre_michael = 3
+default sed_michael = 3
+default hambre_hanna = 3
+default sed_hanna = 3
+default hambre_nelson = 3
+default sed_nelson = 3
+default hambre_user = 3
+default sed_user = 3
+
+
+# INDICADOR DE NECESIDADES (COMIDA Y AGUA)
+screen indicador_necesidad(valor, tipo, x, y):
+
+    if tipo == "hambre":
+        if valor == 3:
+            $ color = "#F4A340"
+        elif valor == 2:
+            $ color = "#e5622a"
+        else:
+            $ color = "#b41616"
+
+    elif tipo == "sed":
+        if valor == 3:
+            $ color = "#43B8D8"
+        elif valor == 2:
+            $ color = "#177fab"
+        else:
+            $ color = "#114482"
+
+    hbox:
+        xpos x
+        ypos y
+        spacing 4
+
+        for i in range(3):
+            if i < valor:
+                frame:
+                    xsize 32
+                    ysize 16
+                    padding (0, 0)
+                    background Solid(color)
+            else:
+                frame:
+                    xsize 32
+                    ysize 16
+                    padding (0, 0)
+                    background Solid("#BDBDBD")
+
+
+# SCREEN DE LA TABLET
+screen tablet_cocina():
+
+    # Sombra de fondo sobre la cocina
+    add Solid("#00000066")
+
+    if pantalla_actual == "reportaje":
+        add "images/tablet_report.png":
+            xalign 0.5
+            yalign 0.65
+            zoom 0.75
+
+        viewport:
+            xpos 725
+            ypos 375
+            xsize 470
+            ysize 575
+            scrollbars "vertical"
+            vscrollbar_xsize 8
+            mousewheel True
+            draggable True
+
+            vbox:
+                spacing 14
+
+                text "INFORME DE MISIÓN":
+                    size 26
+                    bold True
+                    color "#0f172a"
+
+                text "PROGRAMA APHRODITE 3 (2052)":
+                    size 17
+                    bold True
+                    color "#0284c7"
+
+                text "El programa Aphrodite de la NASA tiene dos objetivos históricos fundamentales: la búsqueda formal de biofirmas de vida extraterrestre y el asentamiento científico permanente en Marte.":
+                    size 17
+                    color "#334155"
+
+                text "ZONA DE ATERRIZAJE SELECCIONADA:":
+                    size 17
+                    bold True
+                    color "#0284c7"
+
+                text "Tras evaluar las opciones en Control de Misión, el Comandante fijó las coordenadas en [lugar_aterrizaje], una región clave con formaciones sedimentarias y alto potencial biológico.":
+                    size 17
+                    color "#334155"
+
+                text "TRAVESÍA ESPACIAL:":
+                    size 17
+                    bold True
+                    color "#0284c7"
+
+                text "La nave despegó el 6 de junio de 2052 (18:00 UTC). Tras 6 meses y 2 días de travesía por el espacio profundo y una compleja maniobra de frenado orbital, el módulo tocó suelo con éxito.":
+                    size 17
+                    color "#334155"
+
+                text "ESTADO TRAS EL ATERRIZAJE:":
+                    size 17
+                    bold True
+                    color "#0284c7"
+
+                text "Han transcurrido aproximadamente 2 horas desde el contacto. Tras una siesta reparadora en el módulo, la tripulación se reúne en la cocina para planificar el desembarco hacia la base marciana.":
+                    size 17
+                    color "#334155"
+
+                null height 10
+
+                text "💡 Consulta la pestaña de 'Personajes' para revisar el estado y perfil de cada miembro del equipo.":
+                    size 15
+                    italic True
+                    color "#64748b"
+
+
+    elif pantalla_actual == "personajes":
+        add "images/tablet_personajes.png":
+            xalign 0.5
+            yalign 0.65
+            zoom 0.75
+
+        # Indicadores con suministros llenos (3/3)
+        use indicador_necesidad(hambre_michael, "hambre", 790, 620)
+        use indicador_necesidad(sed_michael, "sed", 790, 575)
+
+        use indicador_necesidad(hambre_hanna, "hambre", 790, 920)
+        use indicador_necesidad(sed_hanna, "sed", 790, 875)
+
+        use indicador_necesidad(hambre_nelson, "hambre", 1050, 620)
+        use indicador_necesidad(sed_nelson, "sed", 1050, 575)
+
+        use indicador_necesidad(hambre_user, "hambre", 1050, 915)
+        use indicador_necesidad(sed_user, "sed", 1050, 870)
+
+        # 4 BOTONES INVISIBLES SOBRE CADA PERSONAJE:
+        # 1. Miquel (Arriba Izquierda)
+        button:
+            xpos 660
+            ypos 370
+            xsize 270
+            ysize 285
+            background None
+            hover_background Solid("#38bdf822")
+            action Return("miquel")
+
+        # 2. Nelson (Arriba Derecha)
+        button:
+            xpos 940
+            ypos 370
+            xsize 270
+            ysize 285
+            background None
+            hover_background Solid("#38bdf822")
+            action Return("nelson")
+
+        # 3. Hanna (Abajo Izquierda)
+        button:
+            xpos 660
+            ypos 670
+            xsize 270
+            ysize 285
+            background None
+            hover_background Solid("#38bdf822")
+            action Return("hanna")
+
+        # 4. Comandante / Tú (Abajo Derecha)
+        button:
+            xpos 940
+            ypos 670
+            xsize 270
+            ysize 285
+            background None
+            hover_background Solid("#38bdf822")
+            action Return("comandante")
+
+
+    # BOTONES SUPERIORES DE NAVEGACIÓN EN LA TABLET
+    button:
+        xpos 700
+        ypos 269
+        xsize 65
+        ysize 65
+        background None
+        hover_background Solid("#ffffff22")
+        action SetVariable("pantalla_actual", "reportaje")
+
+    button:
+        xpos 802
+        ypos 269
+        xsize 65
+        ysize 65
+        background None
+        hover_background Solid("#ffffff22")
+        action SetVariable("pantalla_actual", "personajes")
+
+
+    # BOTÓN INFERIOR: GUARDAR TABLET Y CONTINUAR HACIA EL ASENTAMIENTO
+    frame:
+        xalign 0.5
+        ypos 1010
+        background Solid("#0f172af2")
+        padding (24, 8)
+
+        textbutton "GUARDAR TABLET Y CONTINUAR MISIÓN ▶":
+            text_size 20
+            text_bold True
+            text_color "#38bdf8"
+            text_hover_color "#ffffff"
+            action Return("continuar")
+
+
+# SCREEN DE DETALLE DE PERSONAJE (EN LA COCINA)
+screen ficha_personaje(quien):
+
+    # Fondo único de la cocina
+    add "bg cocina_nave"
+
+    # Oscurecimiento de fondo para destacar la ficha técnica
+    add Solid("#00000055")
+
+    # Si es un compañero (Miquel, Hanna, Nelson): recuadro gris azulado con cuerpo entero y características
+    if quien in ["miquel", "hanna", "nelson"]:
+        frame:
+            xalign 0.5
+            yalign 0.44
+            xsize 1460
+            ysize 820
+            background Solid("#1e293bee")
+            padding (40, 30)
+
+            hbox:
+                spacing 40
+                yalign 0.5
+
+                # Contenedor de la imagen de cuerpo entero
+                frame:
+                    xsize 440
+                    ysize 750
+                    background Solid("#0f172a99")
+                    padding (10, 10)
+
+                    if quien == "miquel":
+                        add "images/characters/miquel_cuerpoentero.png":
+                            xalign 0.5
+                            yalign 1.0
+                            ysize 730
+                            fit "contain"
+                    elif quien == "hanna":
+                        add "images/characters/hanna_cuerpoentero.png":
+                            xalign 0.5
+                            yalign 1.0
+                            ysize 730
+                            fit "contain"
+                    elif quien == "nelson":
+                        add "images/characters/nelson_cuerpoentero.png":
+                            xalign 0.5
+                            yalign 1.0
+                            ysize 730
+                            fit "contain"
+
+                # Bloque de características técnicas
+                vbox:
+                    spacing 16
+                    xsize 900
+                    yalign 0.5
+
+                    if quien == "miquel":
+                        text "MIQUEL":
+                            size 44
+                            bold True
+                            color "#7ed957"
+
+                        text "Piloto de la Misión & Ingeniero Mecánico":
+                            size 24
+                            bold True
+                            color "#94a3b8"
+
+                        null height 10
+
+                        frame:
+                            background Solid("#0f172acc")
+                            padding (25, 20)
+                            xfill True
+
+                            vbox:
+                                spacing 12
+                                text "{b}• Edad:{/b} 29 años" size 20 color "#e2e8f0"
+                                text "{b}• Origen:{/b} Catalán / Estadounidense" size 20 color "#e2e8f0"
+                                text "{b}• Especialidad:{/b} Pilotaje orbital, sistemas mecánicos de aterrizaje y mantenimiento de hábitats." size 20 color "#e2e8f0"
+                                text "{b}• Rol en la misión:{/b} Responsable de las maniobras de navegación de la nave Aphrodite 3, de los sistemas motrices de los rovers y de la integridad mecánica de la base." size 20 color "#e2e8f0"
+                                text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (Plenamente operativo)" size 20 color "#7ed957"
+
+                    elif quien == "hanna":
+                        text "HANNA":
+                            size 44
+                            bold True
+                            color "#ff751f"
+
+                        text "Especialista en Robótica & Telecomunicaciones":
+                            size 24
+                            bold True
+                            color "#94a3b8"
+
+                        null height 10
+
+                        frame:
+                            background Solid("#0f172acc")
+                            padding (25, 20)
+                            xfill True
+
+                            vbox:
+                                spacing 12
+                                text "{b}• Edad:{/b} 31 años" size 20 color "#e2e8f0"
+                                text "{b}• Origen:{/b} Japonesa" size 20 color "#e2e8f0"
+                                text "{b}• Especialidad:{/b} Redes de telecomunicación espacial, bio-robótica e instrumentación de laboratorio." size 20 color "#e2e8f0"
+                                text "{b}• Rol en la misión:{/b} Gestión del enlace cuántico con la Tierra, calibración de sensores espectrométricos y dirección del instrumental robótico de prospección." size 20 color "#e2e8f0"
+                                text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (Plenamente operativa)" size 20 color "#ff751f"
+
+                    elif quien == "nelson":
+                        text "NELSON":
+                            size 44
+                            bold True
+                            color "#f423a3"
+
+                        text "Oficial Médico & Bioquímico de la Expedición":
+                            size 24
+                            bold True
+                            color "#94a3b8"
+
+                        null height 10
+
+                        frame:
+                            background Solid("#0f172acc")
+                            padding (25, 20)
+                            xfill True
+
+                            vbox:
+                                spacing 12
+                                text "{b}• Edad:{/b} 34 años" size 20 color "#e2e8f0"
+                                text "{b}• Origen:{/b} Senegalés" size 20 color "#e2e8f0"
+                                text "{b}• Especialidad:{/b} Fisiología espacial, química analítica y soporte vital ambiental." size 20 color "#e2e8f0"
+                                text "{b}• Rol en la misión:{/b} Monitorización biológica de la tripulación, análisis químico de muestras del suelo y supervisión de los sistemas de filtrado de aire y agua." size 20 color "#e2e8f0"
+                                text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (Plenamente operativo)" size 20 color "#f423a3"
+
+    # Si el jugador se clica a sí mismo (Comandante): solo características, sin foto de cuerpo entero
+    elif quien == "comandante":
+        frame:
+            xalign 0.5
+            yalign 0.44
+            xsize 1140
+            ysize 680
+            background Solid("#1e293bee")
+            padding (50, 40)
+
+            vbox:
+                spacing 20
+                yalign 0.5
+
+                text "COMANDANTE (TÚ)":
+                    size 44
+                    bold True
+                    color "#8c52ff"
+
+                text "Líder de la Expedición Aphrodite 3 & Dirección Científica":
+                    size 24
+                    bold True
+                    color "#94a3b8"
+
+                frame:
+                    background Solid("#0f172acc")
+                    padding (35, 30)
+                    xfill True
+
+                    vbox:
+                        spacing 14
+                        text "{b}• Rango:{/b} Comandante en Jefe de la misión marciana Aphrodite 3." size 21 color "#e2e8f0"
+                        text "{b}• Especialidad:{/b} Biólogo y geólogo planetario." size 21 color "#e2e8f0"
+                        text "{b}• Responsabilidades:{/b} Máxima autoridad en la toma de decisiones estratégicas, asignación y aprobación de misiones operativas, y coordinación científica del asentamiento." size 21 color "#e2e8f0"
+                        text "{b}• Objetivo Principal:{/b} Garantizar la supervivencia de la tripulación, liderar la prospección de biofirmas y asegurar la habitabilidad a largo plazo en Marte." size 21 color "#e2e8f0"
+                        text "{b}• Estado de suministros:{/b} Comida 3/3 | Agua 3/3 (En perfectas condiciones)" size 21 color "#8c52ff"
+
+    # Botón en la esquina inferior izquierda: Volver a la tablet
+    frame:
+        xpos 60
+        ypos 970
+        background Solid("#0f172af5")
+        padding (22, 10)
+
+        textbutton "◀  VOLVER A LA TABLET":
+            text_size 22
+            text_bold True
+            text_color "#38bdf8"
+            text_hover_color "#ffffff"
+            action Return()
