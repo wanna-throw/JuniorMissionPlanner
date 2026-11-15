@@ -78,16 +78,16 @@ transform mover_der_idle:
 init python:
     CHAR_IMAGE_TAGS = {
         "Miquel": [
-            "miquel_mediocuerpo", "miquel_cuerpoentero",
+            "miquel", "miquel_mediocuerpo", "miquel_cuerpoentero",
             "miquel_mediocuerpo_pensativo", "miquel_mediocuerpo_sonriendo"
         ],
         "Hanna": [
-            "hanna_mediocuerpo_seria", "hanna_cuerpoentero",
+            "hanna", "hanna_mediocuerpo_seria", "hanna_cuerpoentero",
             "hanna_mediocuerpo", "hanna_mediocuerpo_sorprendida",
-            "hanna_mediocuerpo__pensativa"
+            "hanna_mediocuerpo__pensativa", "hanna_mediocuerpo_pensativa"
         ],
         "Nelson": [
-            "nelson_mediocuerpo", "nelson_cuerpoentero",
+            "nelson", "nelson_mediocuerpo", "nelson_cuerpoentero",
             "nelson_mediocuerpo_enfadado", "nelson_mediocuerpo_pensativo",
             "nelson_mediocuerpo_sorprendido"
         ]
@@ -151,6 +151,9 @@ define T = Character("Tú", color="#8c52ff", callback=speaker_callback("Tú"))
 ## -------------------------------------------------------------
 default puntuacion = 0
 default lugar_aterrizaje = ""
+default informe_nelson = False
+default informe_hanna = False
+default informe_miquel = False
 
 ## -------------------------------------------------------------
 ## Fondos (adaptados a 1920x1080)
@@ -208,34 +211,96 @@ image bg centro_nelson:
     size (1920, 1080)
 
 ## -------------------------------------------------------------
-## Sprites de Personajes (escalados proporcionalmente a 1080p)
+## Sprites de Personajes con Sistema de Tags y Atributos de Ren'Py
 ## -------------------------------------------------------------
-image miquel_mediocuerpo:
-    "images/characters/miquel_mediocuerpo.png"
+
+# --- NELSON (Tag: 'nelson') ---
+image nelson:
+    "images/characters/nelson_mediocuerpo.png"
     ysize 720
     fit "contain"
 
-image hanna_mediocuerpo_seria:
-    "images/characters/hanna_mediocuerpo_seria.png"
+image nelson pensativo:
+    "images/characters/nelson_mediocuerpo_pensativo.png"
     ysize 720
     fit "contain"
 
-image hanna_cuerpoentero:
-    "images/characters/hanna_cuerpoentero.png"
-    ysize 920
+image nelson sorprendido:
+    "images/characters/nelson_mediocuerpo_sorprendido.png"
+    ysize 720
     fit "contain"
 
-image miquel_cuerpoentero:
-    "images/characters/miquel_cuerpoentero.png"
-    ysize 920
+image nelson enfadado:
+    "images/characters/nelson_mediocuerpo_enfadado.png"
+    ysize 720
     fit "contain"
 
-image nelson_cuerpoentero:
+image nelson cuerpoentero:
     "images/characters/nelson_cuerpoentero.png"
     ysize 920
     fit "contain"
 
-image nelson_mediocuerpo:
-    "images/characters/nelson_mediocuerpo.png"
+# --- HANNA (Tag: 'hanna') ---
+image hanna:
+    "images/characters/hanna_mediocuerpo_seria.png"
     ysize 720
     fit "contain"
+
+image hanna seria:
+    "images/characters/hanna_mediocuerpo_seria.png"
+    ysize 720
+    fit "contain"
+
+image hanna pensativa:
+    "images/characters/hanna_mediocuerpo__pensativa.png"
+    ysize 720
+    fit "contain"
+
+image hanna sorprendida:
+    "images/characters/hanna_mediocuerpo_sorprendida.png"
+    ysize 720
+    fit "contain"
+
+image hanna cuerpoentero:
+    "images/characters/hanna_cuerpoentero.png"
+    ysize 920
+    fit "contain"
+
+# --- MIQUEL (Tag: 'miquel') ---
+image miquel:
+    "images/characters/miquel_mediocuerpo.png"
+    ysize 720
+    fit "contain"
+
+image miquel pensativo:
+    "images/characters/miquel_mediocuerpo_pensativo.png"
+    ysize 720
+    fit "contain"
+
+image miquel sonriendo:
+    "images/characters/miquel_mediocuerpo_sonriendo.png"
+    ysize 720
+    fit "contain"
+
+image miquel cuerpoentero:
+    "images/characters/miquel_cuerpoentero.png"
+    ysize 920
+    fit "contain"
+
+## -------------------------------------------------------------
+## Alias de compatibilidad hacia atrás
+## -------------------------------------------------------------
+image nelson_mediocuerpo = "nelson"
+image nelson_mediocuerpo_pensativo = "nelson pensativo"
+image nelson_mediocuerpo_sorprendido = "nelson sorprendido"
+image nelson_cuerpoentero = "nelson cuerpoentero"
+
+image hanna_mediocuerpo_seria = "hanna seria"
+image hanna_mediocuerpo_pensativa = "hanna pensativa"
+image hanna_mediocuerpo_sorprendida = "hanna sorprendida"
+image hanna_cuerpoentero = "hanna cuerpoentero"
+
+image miquel_mediocuerpo = "miquel"
+image miquel_mediocuerpo_pensativo = "miquel pensativo"
+image miquel_mediocuerpo_sonriendo = "miquel sonriendo"
+image miquel_cuerpoentero = "miquel cuerpoentero"
