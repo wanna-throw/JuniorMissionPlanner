@@ -311,6 +311,8 @@ screen navigation():
 
         textbutton _("Preferences") action ShowMenu("preferences")
 
+        textbutton _("Achievements") action Show("achievements_screen")
+
         if _in_replay:
 
             textbutton _("End Replay") action EndReplay(confirm=True)
@@ -982,7 +984,7 @@ screen help():
 
     tag menu
 
-    default device = "keyboard"
+    default device = "howto"
 
     use game_menu(_("Help"), scroll="viewport"):
 
@@ -993,13 +995,20 @@ screen help():
 
             hbox:
 
+                textbutton _("How to play") action SetScreenVariable("device", "howto")
                 textbutton _("Keyboard") action SetScreenVariable("device", "keyboard")
                 textbutton _("Mouse") action SetScreenVariable("device", "mouse")
 
                 if GamepadExists():
                     textbutton _("Gamepad") action SetScreenVariable("device", "gamepad")
 
-            if device == "keyboard":
+            if device == "howto":
+                text _("{b}GOAL{/b}\nYou are the commander of the Aphrodite 3 mission. Keep your crew alive on Mars for 10 months and bring back scientific samples to Earth.")
+                text _("{b}RESOURCES{/b}\nThe bar at the top shows energy, water, food, oxygen, temperature, radiation and the antenna (0-100). Press the {b}i{/b} button to see how each one works. If any of them reaches its limit, the crew must evacuate.")
+                text _("{b}THE TABLET{/b}\nEvery day, week or month you receive a report. Use the Crew tab to give food and water rations, produce food in the greenhouse and heat the base. The Events tab warns you about emergencies.")
+                text _("{b}DECISIONS{/b}\nChoose who leads each expedition and solve the minigames (fuses and solar panel). Every decision changes your route, shown in the top-left corner with your progress and achievements.")
+                text _("{b}ENDINGS{/b}\nThere are 8 endings: 6 evacuations (food, water, energy, temperature, oxygen, radiation), a bad result and the best ending. Collect all 16 achievements!")
+            elif device == "keyboard":
                 use keyboard_help
             elif device == "mouse":
                 use mouse_help

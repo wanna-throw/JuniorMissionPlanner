@@ -49,6 +49,8 @@ label intro_aphrodite:
 # =============================================================
 label confirm_landing:
 
+    $ set_chapter(0)
+
     scene bg control_mission with dissolve
 
     c "Landing coordinates locked on [landing_site]."
@@ -67,6 +69,8 @@ label confirm_landing:
     c "And after a difficult orbital insertion and braking maneuver..."
 
     c "You have successfully landed at [landing_site]!"
+
+    $ unlock("touchdown")
 
     c "About 2 hours have passed since then..."
 

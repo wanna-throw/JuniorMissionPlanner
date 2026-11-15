@@ -38,12 +38,19 @@ define FOOD_PRODUCE_WATER = 10       # ...spending this much water
 define FOOD_PRODUCE_ENERGY = 10      # ...and this much energy
 define EASY_DAYS = 7                 # first week: cheaper rations, stable environment
 default solar_efficiency = 100       # % of energy the solar panels produce (drops if a panel is misaligned)
-default energy_carry = 0.0           # fractions of energy produced, kept for the next night
+default energy_carry = 0.0
+define PASSIVE_FOOD = 15   # greenhouse food produced every period
+define PASSIVE_WATER = 15  # water recovered by the ECLSS every period
+default last_passive = None
+default repeat_penalty_pending = None  # crew member who led two missions in a row           # fractions of energy produced, kept for the next night
+
+define HEAT_GAIN = 15                # thermal stability recovered...
+define HEAT_ENERGY = 20              # ...spending this much energy
 
 init python:
     def ration_cost():
-        """Food or water spent to give one ration to one crew member."""
-        return 5 if store.day <= EASY_DAYS else 10
+        """Food or water spent to give one ration to one crew member (kept low so the player can adapt)."""
+        return 5
 
 ## -------------------------------------------------------------
 ## How each indicator works (info window)
@@ -52,15 +59,15 @@ define RES_INFO = [
     ("icon_energy", "ENERGY", "#facc15",
      "Powers the whole base. The solar panels produce +1 every night (around +15 per month). Producing food costs 10 energy. If a solar panel is misaligned, the energy you produce is reduced by a percentage."),
     ("icon_water", "WATER", "#38bdf8",
-     "Every day each crew member gets thirsty (-1 on their water bar). Giving one ration of water costs 5 water during the first week (10 afterwards). Expeditions can find extra water, and the recyclers add +5 per month."),
+     "Over time each crew member gets thirsty (-1 on their water bar). Giving one ration of water costs 5 water. The ECLSS recycling system recovers +15 water every period, and expeditions can find ice."),
     ("icon_food", "FOOD", "#f97316",
-     "Every day each crew member gets hungry (-1 on their food bar). Feeding one crew member costs 5 food during the first week (10 afterwards). You can produce +20 food by spending 10 water and 10 energy. Sending the same person on missions two days in a row makes them lose 1 extra food."),
+     "Over time each crew member gets hungry (-1 on their food bar). Feeding one crew member costs 5 food. The greenhouse produces +15 food every period on its own, and you can produce +20 more by spending 10 water and 10 energy. Sending the same person on two missions in a row makes them lose 1 extra food."),
     ("icon_oxygen", "OXYGEN", "#93c5fd",
-     "Stable during the first week. After that it drops about 10% every month: there is enough for about ten months before the air runs out."),
+     "Stable during the first weeks. From the second month it drops about 10% every month: there is enough for about ten months before the air runs out. If it reaches 0%, the crew must evacuate."),
     ("icon_thermal", "TEMPERATURE", "#fb923c",
-     "Thermal stability of the base. Stable during the first week, then it drops about 10% every month. Spending 20 energy recovers 15%. If it falls to 20%, nobody can survive in the base."),
+     "Thermal stability of the base. It starts changing in week 3 and then drops about 10% every month. Use HEAT THE BASE on the tablet (Crew tab): 20 energy = +15%. If it falls to 20%, the crew must evacuate."),
     ("icon_radiation", "RADIATION", "#ef4444",
-     "Increases with time. How fast depends on the landing site. The higher it gets, the more dangerous it is for the crew."),
+     "Accumulated exposure. It starts increasing in week 3, at a speed that depends on the landing site. If it reaches 100%, the crew must evacuate."),
     ("icon_antenna", "ANTENNA", "#4ade80",
      "Link with Earth. It is either OK or DAMAGED: events such as storms can damage it."),
 ]
@@ -112,7 +119,37 @@ init python:
             store.res_energy -= FOOD_PRODUCE_ENERGY
             store.res_food += FOOD_PRODUCE_GAIN
             clamp_resources()
+            store.food_produced_times += 1
+            if store.food_produced_times >= 3:
+                unlock("greenhouse")
             renpy.restart_interaction()
+
+    def can_heat_base():
+        return store.res_energy >= HEAT_ENERGY and store.res_thermal < 100
+
+    def heat_base():
+        if can_heat_base():
+            store.res_energy -= HEAT_ENERGY
+            store.res_thermal += HEAT_GAIN
+            clamp_resources()
+            renpy.restart_interaction()
+
+    def produce_energy(amount):
+        """Energy produced by the panels and the reactor, reduced by the solar efficiency.
+        Returns the energy actually gained."""
+        store.energy_carry += amount * store.solar_efficiency / 100.0
+        gained = int(store.energy_carry)
+        store.energy_carry -= gained
+        store.res_energy += gained
+        clamp_resources()
+        return gained
+
+    def month_passes():
+        """Monthly environment changes (from the resource management sheet)."""
+        store.res_oxygen -= 10
+        store.res_thermal -= 10
+        store.res_radiation += store.res_radiation_rate
+        clamp_resources()
 
     def night_passes():
         """Applied at the start of every new day."""
@@ -126,26 +163,41 @@ init python:
             store.res_radiation += store.res_radiation_rate / 30.0
         clamp_resources()
 
+    def passive_income():
+        """Passive production every period: greenhouse food and ECLSS recycled water."""
+        store.res_food += PASSIVE_FOOD
+        store.res_water += PASSIVE_WATER
+        clamp_resources()
+        store.last_passive = (PASSIVE_FOOD, PASSIVE_WATER)
+
+    def add_passive_line(report):
+        if not store.last_passive or not report:
+            return report
+        f, w = store.last_passive
+        store.last_passive = None
+        return report[:1] + [("good", "Passive production: greenhouse +%d food, ECLSS water recycling +%d water." % (f, w))] + report[1:]
+
     def crew_gets_hungry():
         """Everyone loses 1 food and 1 water bar.
         If the same person went on a mission the last two days in a row, they lose 1 extra food."""
+        passive_income()
         for k in store.crew_hunger:
             store.crew_hunger[k] = max(0, store.crew_hunger[k] - 1)
             store.crew_thirst[k] = max(0, store.crew_thirst[k] - 1)
-        y = store.mission_by_day.get(store.day - 1)
-        b = store.mission_by_day.get(store.day - 2)
-        if y and y == b:
-            store.crew_hunger[y] = max(0, store.crew_hunger[y] - 1)
+        if store.repeat_penalty_pending:
+            k = store.repeat_penalty_pending
+            store.crew_hunger[k] = max(0, store.crew_hunger[k] - 1)
+            store.repeat_penalty_pending = None
 
     # Screens where the HUD must NOT appear
     HUD_HIDDEN_SCREENS = ("electrical_panel", "wrong_sequence", "interactive_map", "location_card",
                           "warning_screen", "kitchen_tablet", "character_card",
-                          "solar_arrow", "solar_result", "day_title", "game_over_screen", "week_end_screen")
+                          "solar_arrow", "solar_result", "day_title", "the_end_screen", "week_end_screen")
 
     def hud_should_show():
         if not store.hud_on or not store.hud_revealed:
             return False
-        if renpy.showing("black"):
+        if renpy.showing("black") or renpy.showing("bg end"):
             return False
         for s in HUD_HIDDEN_SCREENS:
             if renpy.get_screen(s):
@@ -219,8 +271,10 @@ screen resource_hud():
     zorder 50
 
     if hud_should_show():
+        # Right-aligned so it never overlaps the progress badge (top-left)
         frame:
-            xalign 0.5
+            xalign 1.0
+            xoffset -8
             ypos 8
             background Solid("#1e293be6")
             padding (22, 9)

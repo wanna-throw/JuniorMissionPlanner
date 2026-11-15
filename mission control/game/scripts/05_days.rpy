@@ -12,6 +12,7 @@
 label day_2:
 
     $ day = 2
+    $ set_chapter(2)
     $ night_passes()
 
     call screen day_title("DAY 2", "The first official day of our new life on Mars")
@@ -39,9 +40,13 @@ label day_2:
     $ day_tab = "report"
     $ day_continue_text = "START THE MISSION ▶"
 
+    $ day_report = add_passive_line(day_report)
     call screen day_tablet
 
     $ mission_by_day[day] = mission_choice
+    $ record_mission(mission_choice)
+    $ add_route(CREW_NAMES[mission_choice])
+    $ samples_collected += 1
 
     if mission_choice == "nelson":
         jump day_2_mission_nelson
@@ -122,6 +127,7 @@ label day_2_night:
 label day_3:
 
     $ day = 3
+    $ set_chapter(3)
     $ night_passes()
     $ crew_gets_hungry()
     $ yesterday = mission_by_day.get(2)
@@ -180,6 +186,7 @@ label day_3:
     $ day_tab = "report"
     $ day_continue_text = "END THE DAY ▶"
 
+    $ day_report = add_passive_line(day_report)
     call screen day_tablet
 
     # Short scene with the person who did yesterday's mission
@@ -224,6 +231,7 @@ label day_3:
 label day_4:
 
     $ day = 4
+    $ set_chapter(4)
     $ night_passes()
     $ crew_gets_hungry()
 
@@ -259,7 +267,8 @@ label day_4:
         ("head", "TODAY'S MISSION"),
         ("text", "Adjust the solar panel so it is back in the correct position."),
         ("bad", "WARNING!"),
-        ("text", "If the panel isn't put back in the correct position, the base will produce less energy from now on, and without enough electricity life on Mars gets much harder. You only have one attempt!"),
+        ("text", "You only have ONE attempt to put the lever at the right angle."),
+        ("text", "If it fails, the panel will stay misaligned for the rest of the mission: the base will produce 25% less energy from then on (every night, every week and every month you will receive only 75% of the normal energy). You will have to save electricity to keep the life support, the heating and the greenhouse running."),
     ]
     $ events_seen = False
     $ day_needs_mission = False
@@ -267,6 +276,7 @@ label day_4:
     $ day_tab = "report"
     $ day_continue_text = "GO FIX THE SOLAR PANEL ▶"
 
+    $ day_report = add_passive_line(day_report)
     call screen day_tablet
 
     jump solar_panel_event
@@ -288,7 +298,7 @@ label week_1_end:
 
     call screen week_end_screen
 
-    return
+    jump week_2
 
 
 screen week_end_screen():
@@ -318,7 +328,7 @@ screen week_end_screen():
                 text "Solar energy production: [solar_efficiency]%" size 22 color ("#e2e8f0" if solar_efficiency >= 100 else "#fbbf24") xalign 0.5
 
         null height 10
-        text "To be continued..." size 26 italic True color "#94a3b8" xalign 0.5 at warning_fade_in(1.5)
+        text "Week 2 begins..." size 26 italic True color "#94a3b8" xalign 0.5 at warning_fade_in(1.5)
 
     textbutton "CONTINUE":
         xalign 0.5

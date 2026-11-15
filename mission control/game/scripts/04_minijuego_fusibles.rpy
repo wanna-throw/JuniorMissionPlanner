@@ -7,11 +7,19 @@ default fuses = [False, False, False, False, False, False]
 default sequence = []
 default current_step = 0
 default sequence_text = ""
+# Event mode (Month 3 short circuit): the sequence is only shown for a few seconds
+# and there are limited attempts. Day 1 (tutorial) allows unlimited retries.
+default fuse_event_mode = False
+default fuse_attempts = 2
 
 # =========================================
 # MAIN SCREEN: ELECTRICAL PANEL
 # =========================================
 screen electrical_panel():
+    default seq_shown = True
+
+    if fuse_event_mode:
+        timer 5.0 action SetScreenVariable("seq_shown", False)
 
     # Dark technical background of the panel
     add Solid("#070d18")
@@ -33,17 +41,37 @@ screen electrical_panel():
             xalign 0.5
             spacing 6
 
-            text "POWER DISTRIBUTION PANEL - FUSE SEQUENCE":
-                size 20
-                color "#60a5fa"
-                bold True
-                xalign 0.5
+            if fuse_event_mode:
+                text "SHORT CIRCUIT - DIAGNOSTIC SEQUENCE (memorize it!)":
+                    size 20
+                    color "#f87171"
+                    bold True
+                    xalign 0.5
+            else:
+                text "POWER DISTRIBUTION PANEL - FUSE SEQUENCE":
+                    size 20
+                    color "#60a5fa"
+                    bold True
+                    xalign 0.5
 
-            text "[sequence_text]":
-                size 34
-                color "#facc15"
-                bold True
-                xalign 0.5
+            if seq_shown or not fuse_event_mode:
+                text "[sequence_text]":
+                    size 34
+                    color "#facc15"
+                    bold True
+                    xalign 0.5
+            else:
+                text "? -> ? -> ? -> ? -> ? -> ?":
+                    size 34
+                    color "#64748b"
+                    bold True
+                    xalign 0.5
+
+            if fuse_event_mode:
+                text "Attempts left: [fuse_attempts]":
+                    size 18
+                    color "#e2e8f0"
+                    xalign 0.5
 
     # Coordinates adapted to 1920x1080 resolution
     $ x_start = 590
@@ -73,9 +101,12 @@ screen electrical_panel():
                 [
                     SetVariable("fuses", fuses[:i] + [True] + fuses[i+1:]),
                     SetVariable("current_step", current_step + 1),
-                    If(current_step + 1 == 6, Return())
+                    If(current_step + 1 == 6, Return("fixed"))
                 ],
-                Show("wrong_sequence")
+                [
+                    If(fuse_event_mode, SetVariable("fuse_attempts", fuse_attempts - 1)),
+                    Show("wrong_sequence")
+                ]
             )
 
 # =========================================
@@ -92,7 +123,7 @@ screen wrong_sequence():
         yalign 0.5
 
         xsize 800
-        ysize 460
+        ysize 520
 
         background Solid("#1e293b")
         padding (50, 40)
@@ -126,18 +157,39 @@ screen wrong_sequence():
 
             null height 10
 
-            textbutton "TRY AGAIN":
-                xalign 0.5
-                text_size 26
-                text_color "#ffffff"
-                text_hover_color "#ffffff"
-                background Solid("#b91c1c")
-                hover_background Solid("#dc2626")
-                xpadding 50
-                ypadding 16
+            if fuse_event_mode and fuse_attempts <= 0:
+                text "No attempts left: the repair has failed.":
+                    size 22
+                    color "#fca5a5"
+                    xalign 0.5
+                textbutton "CONTINUE":
+                    xalign 0.5
+                    text_size 26
+                    text_color "#ffffff"
+                    text_hover_color "#ffffff"
+                    background Solid("#475569")
+                    hover_background Solid("#64748b")
+                    xpadding 50
+                    ypadding 16
+                    action [Hide("wrong_sequence"), Return("failed")]
+            else:
+                if fuse_event_mode:
+                    text "Attempts left: [fuse_attempts]":
+                        size 22
+                        color "#e2e8f0"
+                        xalign 0.5
+                textbutton "TRY AGAIN":
+                    xalign 0.5
+                    text_size 26
+                    text_color "#ffffff"
+                    text_hover_color "#ffffff"
+                    background Solid("#b91c1c")
+                    hover_background Solid("#dc2626")
+                    xpadding 50
+                    ypadding 16
 
-                action [
-                    Hide("wrong_sequence"),
-                    SetVariable("fuses", [False, False, False, False, False, False]),
-                    SetVariable("current_step", 0)
-                ]
+                    action [
+                        Hide("wrong_sequence"),
+                        SetVariable("fuses", [False, False, False, False, False, False]),
+                        SetVariable("current_step", 0)
+                    ]

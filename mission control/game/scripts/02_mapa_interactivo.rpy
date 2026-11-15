@@ -330,19 +330,23 @@ screen location_card(location_id):
 label explore_mawrth:
     $ apply_site_resources("mawrth")
     $ landing_site = "Mawrth Vallis"
+    $ record_landing("mawrth", "Mawrth")
     jump confirm_landing
 
 label explore_eberswalde:
     $ apply_site_resources("eberswalde")
     $ landing_site = "Eberswalde Crater"
+    $ record_landing("eberswalde", "Eberswalde")
     jump confirm_landing
 
 label explore_holden:
     $ apply_site_resources("holden")
     $ landing_site = "Holden Crater"
+    $ record_landing("holden", "Holden")
     jump confirm_landing
 
 label explore_gale:
     $ apply_site_resources("gale")
     $ landing_site = "Gale Crater"
+    $ record_landing("gale", "Gale")
     jump confirm_landing

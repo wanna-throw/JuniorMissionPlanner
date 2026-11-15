@@ -170,6 +170,19 @@ screen crew_tab_content():
                     sensitive can_produce_food()
                     action Function(produce_food)
 
+        frame:
+            background Solid("#fee2e2dd")
+            padding (12, 10)
+            xfill True
+            vbox:
+                spacing 6
+                text "HEAT THE BASE" size 17 bold True color "#9a3412"
+                text "+[HEAT_GAIN]% temperature, spending [HEAT_ENERGY] energy." size 14 color "#334155"
+                textbutton "HEAT  +[HEAT_GAIN]%":
+                    style "ration_button"
+                    sensitive can_heat_base()
+                    action Function(heat_base)
+
         null height 10
 
 screen day_tablet():
@@ -177,15 +190,16 @@ screen day_tablet():
     add Solid("#00000055")
 
     # ---------------- TABLET ----------------
+    # Each tab shows its own tablet image, so exactly one icon is highlighted (100%)
     if day_tab == "events":
         add "images/tablet_eventos.png" xalign 0.5 yalign 0.9 zoom 0.75
+    elif day_tab == "crew":
+        add "images/tablet_personajes.png" xalign 0.5 yalign 0.9 zoom 0.75
+        # Cover the fixed crew cards with the empty panel: the cards are drawn
+        # again inside the scrollable area, together with the rations
+        add Crop((0, 356, 906, 927), "images/tablet_report.png") zoom 0.75 xpos 620 ypos 373
     else:
-        # The Crew tab uses the empty report tablet so the cards and the
-        # rations fit inside the same scrollable panel
         add "images/tablet_report.png" xalign 0.5 yalign 0.9 zoom 0.75
-        if day_tab == "crew":
-            # Show the Crew icon highlighted (icons taken from the crew tablet image)
-            add Crop((95, 270, 300, 90), "images/tablet_personajes.png") zoom 0.75 xpos int(620.25 + 95 * 0.75) ypos int(106 + 270 * 0.75)
 
     viewport:
         xpos 725
@@ -230,24 +244,24 @@ screen day_tablet():
         # Red dot: there is a new event
         if not events_seen:
             frame:
-                xpos 958
-                ypos 266 + TAB_DY
+                xpos 966
+                ypos 286
                 xysize (20, 20)
                 background Solid("#ef4444")
     else:
-        # Events tab disabled: greyed out
+        # Events tab disabled: icon faded out (exactly over the icon)
         frame:
-            xpos 905
-            ypos 266 + TAB_DY
-            xysize (75, 72)
-            background Solid("#e5e7ebcc")
+            xpos 902
+            ypos 293
+            xysize (78, 78)
+            background Solid("#f1f5f9b3")
 
     # ---------------- LEFT PANEL: TODAY'S MISSION ----------------
     if day_needs_mission:
         frame:
             style "tab_side_frame"
             xpos 30
-            ypos 110
+            ypos 128
             xsize 560
 
             vbox:
@@ -272,7 +286,7 @@ screen day_tablet():
         frame:
             style "tab_side_frame"
             xpos 30
-            ypos 110
+            ypos 128
             xsize 560
             vbox:
                 spacing 10

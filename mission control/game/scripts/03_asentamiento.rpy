@@ -2,6 +2,8 @@
 
 label ship_wakeup:
 
+    $ set_chapter(1)
+
     # Continues inside the ship after landing
     scene bg ship with dissolve
 
@@ -142,7 +144,9 @@ label settlement_arrival:
     $ current_step = 0
     $ sequence_text = " -> ".join(str(x + 1) for x in sequence)
 
+    $ fuse_event_mode = False
     call screen electrical_panel
+    $ unlock("power_up")
 
     # -------------------------------------------------------------
     # RESOLUTION AFTER COMPLETING THE MINIGAME
@@ -380,6 +384,8 @@ label miquel_report_dialogue:
 # =============================================================
 label settlement_final_meeting:
 
+    $ unlock("team_briefing")
+
     scene bg mars_base with fade
 
     "With the three reports in hand, you gather the whole crew in the base's central command room."
@@ -497,7 +503,7 @@ screen kitchen_tablet():
     # NOTIFICATION IN THE TOP-LEFT CORNER (WITHOUT COVERING THE TABLET)
     frame:
         xpos 50
-        ypos 50
+        ypos 120
         xsize 500
         background Solid("#0f172ae6")
         padding (24, 20)

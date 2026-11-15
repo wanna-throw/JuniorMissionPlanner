@@ -72,7 +72,7 @@ screen crew_selection_screen():
 
     # Header, top left (out of the way of the HUD and the characters)
     frame:
-        xpos 40
+        xpos 275
         ypos 100
         background Solid("#1e293bee")
         padding (26, 12)

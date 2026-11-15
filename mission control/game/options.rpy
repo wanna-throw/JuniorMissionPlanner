@@ -30,6 +30,17 @@ define config.version = "1.0"
 ## triple-quotes, and leave a blank line between paragraphs.
 
 define gui.about = _p("""
+{b}MISSION CONTROL - Aphrodite 3{/b}
+
+A science-fiction survival visual novel set on Mars in 2052. As commander of the URA's Aphrodite 3 mission, you must keep your crew alive for 10 months by managing energy, water, food, oxygen, temperature and radiation, while searching for signs of life.
+
+{b}Crew:{/b} Miquel (pilot and mechanical engineer), Hanna (robotics and telecommunications), Nelson (medical officer and chemist) and you, the Commander (geologist and biologist).
+
+{b}Science:{/b} the life-support systems are inspired by real NASA technology: MOXIE (oxygen from the Martian atmosphere), the ECLSS water recovery system of the International Space Station, Fission Surface Power and Mars solar arrays. The landing sites are real candidate sites from the Mars Science Laboratory selection.
+
+{b}Developed by:{/b} the Junior Mission Planner team, with Ren'Py.
+
+This game is a work of fiction. The United Robotics Association (URA) is a fictional organization.
 """)
 
 

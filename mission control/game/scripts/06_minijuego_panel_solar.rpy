@@ -202,6 +202,8 @@ label solar_panel_minigame:
     $ renpy.call_screen("solar_result", success=solar_success)
 
     if solar_success:
+        $ unlock("sun_chaser")
+        $ add_route("Panel ✓")
         scene bg solar_panels with fade
         $ set_char_pos("Miquel", "center")
         show miquel smiling at pos_center with dissolve
@@ -220,6 +222,7 @@ define SOLAR_FAIL_PENALTY = 25   # % of energy production lost
 label solar_panel_failed:
 
     $ solar_efficiency = max(0, solar_efficiency - SOLAR_FAIL_PENALTY)
+    $ add_route("Panel ✗")
 
     scene bg solar_panels with fade
 
