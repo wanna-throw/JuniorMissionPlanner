@@ -162,6 +162,18 @@ image bg nave_marte:
     "images/bg/bg_nave_marte.png"
     size (1920, 1080)
 
+image bg cocina_nave:
+    "images/bg/bg_cocina_nave.png"
+    size (1920, 1080)
+
+image bg cocina:
+    "images/bg/bg_cocina_nave.png"
+    size (1920, 1080)
+
+image bg_cocina_nave:
+    "images/bg/bg_cocina_nave.png"
+    size (1920, 1080)
+
 image bg base_marte:
     "images/bg/bg_base_marte.png"
     size (1920, 1080)

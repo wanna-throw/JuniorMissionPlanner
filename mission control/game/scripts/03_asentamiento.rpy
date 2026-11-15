@@ -52,12 +52,14 @@ label despertar_nave:
     hide hanna_mediocuerpo_seria
     with dissolve
 
-    # Transición a la cocina
-    scene black with fade
-
     menu:
         "Ir a la cocina":
-            T "*Te haces un café*"
+            pass
+
+    # Escena de la cocina de la nave
+    scene bg cocina_nave with fade
+
+    T "*Te haces un café*"
 
     T "Echo de menos el café de casa."
 
