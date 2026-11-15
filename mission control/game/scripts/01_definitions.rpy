@@ -150,10 +150,27 @@ define T = Character("Tú", color="#8c52ff", callback=speaker_callback("Tú"))
 ## Variables globales
 ## -------------------------------------------------------------
 default puntuacion = 0
+default lugar_aterrizaje = ""
 
 ## -------------------------------------------------------------
 ## Fondos (adaptados a 1920x1080)
 ## -------------------------------------------------------------
+image bg rueda_prensa:
+    "images/bg/bg_rueda_prensa.jpg"
+    size (1920, 1080)
+
+image bg_rueda_prensa:
+    "images/bg/bg_rueda_prensa.jpg"
+    size (1920, 1080)
+
+image bg control_mission:
+    "images/bg/bg_control_mission.jpg"
+    size (1920, 1080)
+
+image bg_control_mission:
+    "images/bg/bg_control_mission.jpg"
+    size (1920, 1080)
+
 image bg nave:
     "images/bg/bg_nave_marte.png"
     size (1920, 1080)
